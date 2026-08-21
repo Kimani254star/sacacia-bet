@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saccaia Bet — Demo Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FFFFFF;
+    --bg-rgb: 255,255,255;
+    --bg-alt: #F6F5F1;
+    --surface: #FFFFFF;
+    --surface-alt: #F1EFE8;
+    --text: #14181A;
+    --text-rgb: 20,24,26;
+    --ink: #14181A;
+    --gold: #F2A93B;
+    --gold-dim: #C98A2C;
+    --coral: #D6472E;
+    --mint: #1B9C6E;
+    --line: rgba(20,24,26,0.12);
+    --display: 'Big Shoulders Display', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    color-scheme: light;
+  }
+  [data-theme="dark"]{
+    --bg: #0B0D0C;
+    --bg-rgb: 11,13,12;
+    --bg-alt: #14181A;
+    --surface: #14181A;
+    --surface-alt: #1B211F;
+    --text: #F4EFE2;
+    --text-rgb: 244,239,226;
+    --ink: #14181A;
+    --coral: #FF6B52;
+    --mint: #4FD1A5;
+    --line: rgba(244,239,226,0.14);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; width:100%; overflow-x:hidden;}
+  body{width:100%; overflow-x:hidden;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    line-height:1.5;
+    transition: background .2s, color .2s;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:inherit; cursor:pointer;}
+  :focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+
+  /* ===== demo banner ===== */
+  .demo-banner{
+    background: var(--gold);
+    color:var(--ink);
+    font-family: var(--mono);
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.02em;
+    text-align:center;
+    padding:9px 16px;
+  }
+
+  /* ===== nav ===== */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    background: rgba(var(--bg-rgb), 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px;
+  }
+  .logo{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:24px;
+    letter-spacing:.01em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo .dot{color:var(--gold);}
+  nav.links{display:flex; gap:28px; font-size:14.5px; font-weight:500;}
+  nav.links a{color:rgba(var(--text-rgb),0.75); transition:color .15s;}
+  nav.links a:hover{color:var(--text);}
+  nav.links a.nav-active{color:var(--gold);}
+  .nav-actions{display:flex; gap:10px; align-items:center;}
+  .logged-out-actions{display:flex; gap:10px;}
+  .theme-toggle{
+    width:38px; height:38px; border-radius:8px; border:1px solid var(--line);
+    background:transparent; font-size:16px; display:flex; align-items:center; justify-content:center;
+    transition:all .15s;
+  }
+  .theme-toggle:hover{border-color:var(--gold);}
+  .btn{
+    font-size:14px; font-weight:600; padding:10px 18px; border-radius:6px;
+    border:1px solid var(--line); background:transparent; color:var(--text);
+    transition:all .15s;
+  }
+  .btn:hover{border-color:var(--text);}
+  .btn-gold{
+    background:var(--gold); color:var(--ink); border-color:var(--gold);
+  }
+  .btn-gold:hover{background:#ffbf5c; border-color:#ffbf5c;}
+  .menu-toggle{display:none; background:none; border:none; color:var(--text); font-size:22px;}
+
+  /* ===== hero / scoreboard ===== */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse 900px 500px at 80% -10%, rgba(242,169,59,0.14), transparent 60%),
+      linear-gradient(180deg, var(--surface-alt) 0%, var(--surface) 100%);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .hero-inner{
+    padding:72px 24px 48px;
+    display:grid; grid-template-columns: 1.1fr 0.9fr; gap:48px; align-items:center;
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; color:var(--gold-dim);
+    letter-spacing:.12em; text-transform:uppercase; margin-bottom:18px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow .live-pip{
+    width:7px; height:7px; border-radius:50%; background:var(--coral);
+    box-shadow:0 0 0 0 rgba(232,92,65,0.6);
+    animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(232,92,65,0.55);}
+    70%{box-shadow:0 0 0 8px rgba(232,92,65,0);}
+    100%{box-shadow:0 0 0 0 rgba(232,92,65,0);}
+  }
+  h1{
+    font-family:var(--display); font-weight:800;
+    font-size:clamp(40px, 5.4vw, 68px);
+    line-height:0.96; letter-spacing:-.01em;
+    margin-bottom:20px;
+  }
+  h1 .accent{color:var(--gold);}
+  .hero-sub{
+    font-size:17px; color:rgba(var(--text-rgb),0.72); max-width:44ch; margin-bottom:30px;
+  }
+  .hero-cta{display:flex; gap:12px; flex-wrap:wrap;}
+  .btn-lg{padding:14px 26px; font-size:15px; border-radius:7px;}
+
+  /* flip scoreboard */
+  .scoreboard{
+    background: var(--bg);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  .scoreboard-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px; border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:11.5px; color:rgba(var(--text-rgb),0.55);
+    text-transform:uppercase; letter-spacing:.08em;
+  }
+  .flip-row{
+    display:grid; grid-template-columns: 1fr auto auto auto;
+    align-items:center; gap:10px;
+    padding:16px 18px; border-bottom:1px solid var(--line);
+  }
+  .flip-row:last-child{border-bottom:none;}
+  .fixture{font-size:13.5px; font-weight:600;}
+  .fixture .vs{color:rgba(var(--text-rgb),0.4); font-weight:400; margin:0 4px;}
+  .flip-tile{
+    font-family:var(--mono); font-weight:600; font-size:14px;
+    background:var(--surface-alt); color:var(--gold-dim);
+    border:1px solid rgba(242,169,59,0.35);
+    border-radius:5px; padding:7px 10px; min-width:52px; text-align:center;
+  }
+
+  /* ===== section shell ===== */
+  section{padding:64px 0;}
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+    margin-bottom:28px; flex-wrap:wrap;
+  }
+  h2{font-family:var(--display); font-weight:700; font-size:clamp(26px,3.2vw,36px);}
+  .section-note{font-size:13.5px; color:rgba(var(--text-rgb),0.55); font-family:var(--mono);}
+
+  /* sport tabs */
+  .tabs{display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;}
+  .tab{
+    font-size:13.5px; font-weight:600; padding:8px 16px; border-radius:20px;
+    border:1px solid var(--line); background:rgba(var(--text-rgb),0.03);
+    color:rgba(var(--text-rgb),0.65);
+  }
+  .tab.active{background:var(--gold); border-color:var(--gold); color:var(--ink);}
+
+  /* match card */
+  .matches{display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .match{
+    background:var(--surface);
+    padding:18px 20px;
+    display:grid; grid-template-columns: 90px 1fr auto; gap:18px; align-items:center;
+  }
+  .match-time{font-family:var(--mono); font-size:12px; color:rgba(var(--text-rgb),0.5);}
+  .match-time .today{color:var(--gold-dim); font-weight:600; display:block; margin-bottom:2px;}
+  .match-teams{font-size:15px; font-weight:600;}
+  .match-teams .league{
+    display:block; font-family:var(--mono); font-size:11px; font-weight:500;
+    color:rgba(var(--text-rgb),0.45); text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px;
+  }
+  .odds-row{display:flex; gap:8px;}
+  .odd-btn{
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    background:rgba(var(--text-rgb),0.04); border:1px solid var(--line);
+    border-radius:7px; padding:8px 14px; min-width:64px;
+    font-family:var(--mono); transition:all .15s;
+  }
+  .odd-btn:hover{border-color:var(--gold); background:rgba(242,169,59,0.08);}
+  .odd-btn .lbl{font-size:10px; color:rgba(var(--text-rgb),0.45); text-transform:uppercase;}
+  .odd-btn .val{font-size:15px; font-weight:600; color:var(--gold-dim);}
+  .odd-btn.selected{background:var(--gold); border-color:var(--gold);}
+  .odd-btn.selected .val, .odd-btn.selected .lbl{color:var(--ink);}
+
+  /* ===== aviator crash game ===== */
+  .aviator-wrap{
+    background: linear-gradient(180deg, #0d2a20 0%, var(--surface) 100%);
+    border:1px solid var(--line); border-radius:16px; overflow:hidden;
+  }
+  .aviator-history{
+    display:flex; gap:8px; padding:14px 20px; border-bottom:1px solid var(--line);
+    overflow-x:auto;
+  }
+  .hist-pill{
+    font-family:var(--mono); font-size:12px; font-weight:600;
+    padding:5px 10px; border-radius:20px; white-space:nowrap;
+    background:rgba(var(--text-rgb),0.06); color:rgba(var(--text-rgb),0.5);
+  }
+  .hist-pill.win{color:var(--gold-dim); background:rgba(242,169,59,0.18);}
+  .hist-pill.big{color:var(--coral); background:rgba(232,92,65,0.14);}
+
+  .aviator-stage{
+    position:relative; height:280px; margin:0 20px;
+    background:
+      radial-gradient(ellipse 500px 260px at 30% 100%, rgba(242,169,59,0.10), transparent 65%),
+      var(--bg);
+    border-radius:10px; overflow:hidden;
+    background-size: 26px 26px;
+    background-image:
+      linear-gradient(rgba(var(--text-rgb),0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--text-rgb),0.045) 1px, transparent 1px);
+  }
+  #curveSvg{position:absolute; inset:0; width:100%; height:100%;}
+  .plane-emoji{
+    position:absolute; font-size:22px; transform:translate(-50%,-50%) rotate(-8deg);
+    transition:left .12s linear, bottom .12s linear;
+    filter:drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+  }
+  .multiplier-display{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    text-align:center; z-index:5; pointer-events:none;
+  }
+  .multiplier-display .mult{
+    font-family:var(--display); font-weight:800; font-size:56px; color:var(--text);
+    letter-spacing:-.01em;
+  }
+  .multiplier-display .mult.flying{color:var(--gold);}
+  .multiplier-display .mult.crashed{color:var(--coral);}
+  .multiplier-display .status{
+    font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:rgba(var(--text-rgb),0.5); margin-top:4px;
+  }
+  .round-caption{
+    position:absolute; bottom:12px; left:0; right:0; text-align:center;
+    font-family:var(--mono); font-size:11.5px; color:rgba(var(--text-rgb),0.4);
+  }
+
+  .aviator-panels{
+    display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line);
+    border-top:1px solid var(--line); margin-top:20px;
+  }
+  .bet-panel{background:var(--surface); padding:20px;}
+  .bet-panel-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .bet-panel-head span{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:rgba(var(--text-rgb),0.5);}
+  .stake-row{display:flex; gap:8px; margin-bottom:10px;}
+  .stake-input{
+    flex:1; padding:12px; border-radius:8px; border:1px solid var(--line);
+    background:rgba(var(--text-rgb),0.04); color:var(--text); font-family:var(--mono); font-size:15px; font-weight:600;
+  }
+  .stake-input:focus{border-color:var(--gold); outline:none;}
+  .stake-btns{display:flex; gap:6px; margin-bottom:14px;}
+  .stake-chip{
+    flex:1; font-family:var(--mono); font-size:12px; font-weight:600; padding:7px 0;
+    border-radius:6px; border:1px solid var(--line); background:transparent; color:rgba(var(--text-rgb),0.6);
+  }
+  .stake-chip:hover{border-color:var(--gold); color:var(--gold);}
+  .auto-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    font-size:12.5px; color:rgba(var(--text-rgb),0.6); margin-bottom:14px;
+  }
+  .auto-row input[type=text]{
+    width:78px; padding:7px 8px; border-radius:6px; border:1px solid var(--line);
+    background:rgba(var(--text-rgb),0.04); color:var(--text); font-family:var(--mono); font-size:13px;
+  }
+  .switch{
+    position:relative; width:36px; height:20px; background:rgba(var(--text-rgb),0.15); border-radius:20px; cursor:pointer;
+  }
+  .switch.on{background:var(--gold);}
+  .switch::after{
+    content:''; position:absolute; top:2px; left:2px; width:16px; height:16px;
+    background:var(--text); border-radius:50%; transition:left .15s;
+  }
+  .switch.on::after{left:18px; background:var(--surface);}
+  .bet-action{
+    width:100%; padding:16px; border-radius:9px; border:none;
+    font-family:var(--display); font-weight:700; font-size:18px; letter-spacing:.01em;
+    background:var(--gold); color:var(--ink); transition:all .12s;
+  }
+  .bet-action:hover{background:#ffbf5c;}
+  .bet-action.placed{background:var(--coral); color:var(--text);}
+  .bet-action .sub{display:block; font-family:var(--mono); font-size:11px; font-weight:500; margin-top:2px; letter-spacing:normal;}
+
+  .aviator-footer{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    padding:16px 20px; font-family:var(--mono); font-size:11.5px; color:rgba(var(--text-rgb),0.45);
+  }
+  .gg-badge{
+    display:inline-flex; align-items:center; gap:6px; font-weight:700; color:var(--gold-dim);
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:860px){
+    .aviator-panels{grid-template-columns:1fr;}
+    .multiplier-display .mult{font-size:40px;}
+  }
+
+  /* ===== live scores ===== */
+  .results-strip{display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; margin-bottom:24px;}
+  .result-chip{
+    flex:0 0 auto; background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:12px 16px; min-width:180px;
+  }
+  .result-chip .rc-league{font-family:var(--mono); font-size:10px; color:rgba(var(--text-rgb),0.45); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;}
+  .result-chip .rc-row{display:flex; justify-content:space-between; font-size:13px; font-weight:600; padding:2px 0;}
+  .result-chip .rc-score{font-family:var(--mono); color:var(--gold-dim);}
+  .result-chip .rc-ft{font-family:var(--mono); font-size:10px; color:rgba(var(--text-rgb),0.4); margin-top:6px;}
+
+  .live-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px;
+  }
+  .live-card-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:18px; flex-wrap:wrap;}
+  .live-badge{
+    font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.06em;
+    padding:5px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:6px;
+    background:rgba(var(--text-rgb),0.06); color:rgba(var(--text-rgb),0.5);
+  }
+  .live-badge.is-live{background:rgba(232,92,65,0.14); color:var(--coral);}
+  .live-badge .dot{width:6px; height:6px; border-radius:50%; background:currentColor;}
+  .live-badge.is-live .dot{animation:pulse 1.6s infinite;}
+  .live-fixture{font-family:var(--display); font-weight:700; font-size:22px; margin-bottom:4px;}
+  .live-meta{font-family:var(--mono); font-size:12px; color:rgba(var(--text-rgb),0.5);}
+  .live-odds{display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;}
+
+  /* ===== wallet / bet-slip switcher ===== */
+  .wallet-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    max-width:520px;
+  }
+  .wallet-tabs{display:flex; border-bottom:1px solid var(--line);}
+  .wallet-tab{
+    flex:1; padding:14px; font-size:13.5px; font-weight:600; background:transparent; border:none;
+    color:rgba(var(--text-rgb),0.55); border-bottom:2px solid transparent;
+  }
+  .wallet-tab.active{color:var(--gold-dim); border-bottom-color:var(--gold);}
+  .wallet-pane{padding:22px; display:none;}
+  .wallet-pane.active{display:block;}
+  .wallet-balance{font-family:var(--display); font-weight:800; font-size:38px; margin-bottom:4px;}
+  .wallet-balance-lbl{font-family:var(--mono); font-size:11.5px; color:rgba(var(--text-rgb),0.5); text-transform:uppercase; letter-spacing:.06em; margin-bottom:18px;}
+  .wallet-actions{display:flex; gap:10px;}
+  .slip-empty{font-size:13.5px; color:rgba(var(--text-rgb),0.55); text-align:center; padding:20px 0;}
+
+  /* ===== spin & win ===== */
+  .spin-wrap{
+    background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:32px;
+    display:grid; grid-template-columns:auto 1fr; gap:36px; align-items:center;
+  }
+  .wheel-outer{position:relative; width:260px; height:260px; flex:0 0 auto;}
+  .wheel-pointer{
+    position:absolute; top:-4px; left:50%; transform:translateX(-50%);
+    width:0; height:0; border-left:12px solid transparent; border-right:12px solid transparent;
+    border-top:20px solid var(--gold); z-index:5;
+  }
+  #spinWheel{width:100%; height:100%; transition: transform 4.5s cubic-bezier(.17,.67,.16,.99);}
+  .spin-btn{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:64px; height:64px; border-radius:50%; border:3px solid var(--surface);
+    background:var(--gold); color:var(--ink); font-family:var(--display); font-weight:800; font-size:14px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.25);
+  }
+  .spin-btn:disabled{opacity:0.6;}
+  .spin-info h3{font-family:var(--display); font-size:24px; font-weight:700; margin-bottom:10px;}
+  .spin-info p{font-size:14px; color:rgba(var(--text-rgb),0.65); max-width:44ch; margin-bottom:16px;}
+  .spin-result{
+    font-family:var(--mono); font-size:13px; font-weight:600; color:var(--gold-dim);
+    min-height:20px;
+  }
+  @media (max-width:860px){
+    .spin-wrap{grid-template-columns:1fr; justify-items:center; text-align:center;}
+  }
+
+  /* ===== how it works ===== */
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .step{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px;
+  }
+  .step-num{font-family:var(--display); font-size:34px; font-weight:800; color:var(--gold); margin-bottom:10px;}
+  .step h3{font-size:16px; margin-bottom:8px; font-weight:600;}
+  .step p{font-size:13.5px; color:rgba(var(--text-rgb),0.6);}
+
+  /* ===== responsible gambling ===== */
+  .rg{
+    background: linear-gradient(180deg, var(--surface-alt) 0%, var(--surface) 100%);
+    border:1px solid var(--line); border-radius:16px; padding:40px;
+    display:grid; grid-template-columns:1.2fr 1fr; gap:32px; align-items:center;
+  }
+  .rg h2{margin-bottom:14px;}
+  .rg p{color:rgba(var(--text-rgb),0.72); font-size:14.5px; max-width:52ch; margin-bottom:18px;}
+  .rg-tags{display:flex; gap:10px; flex-wrap:wrap;}
+  .rg-tag{
+    font-family:var(--mono); font-size:12px; border:1px solid var(--line);
+    padding:8px 14px; border-radius:20px; color:rgba(var(--text-rgb),0.75);
+  }
+  .rg-card{
+    background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:22px;
+  }
+  .rg-card .rg-num{font-family:var(--display); font-weight:800; font-size:30px; color:var(--gold);}
+  .rg-card .rg-lbl{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:rgba(var(--text-rgb),0.5); margin-top:4px;}
+  .rg-divider{height:1px; background:var(--line); margin:16px 0;}
+
+  /* ===== footer ===== */
+  footer{border-top:1px solid var(--line); padding:48px 0 32px; background:var(--bg);}
+  .footer-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:32px; margin-bottom:36px;}
+  .footer-brand p{font-size:13.5px; color:rgba(var(--text-rgb),0.55); margin-top:10px; max-width:32ch;}
+  .footer-col h4{font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color:rgba(var(--text-rgb),0.5); margin-bottom:14px;}
+  .footer-col a{display:block; font-size:13.5px; color:rgba(var(--text-rgb),0.7); margin-bottom:10px;}
+  .footer-col a:hover{color:var(--gold);}
+  .footer-bottom{
+    border-top:1px solid var(--line); padding-top:22px;
+    font-size:12px; color:rgba(var(--text-rgb),0.4); font-family:var(--mono);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+
+  /* ===== modal (login/signup, cosmetic) ===== */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(8,15,12,0.7); backdrop-filter:blur(4px);
+    display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
+  }
+  .modal-backdrop.open{display:flex;}
+  .modal{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    width:100%; max-width:400px; padding:30px;
+  }
+  .modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;}
+  .modal-head h3{font-family:var(--display); font-size:22px; font-weight:700;}
+  .modal-close{background:none; border:none; color:rgba(var(--text-rgb),0.6); font-size:20px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12.5px; margin-bottom:6px; color:rgba(var(--text-rgb),0.65);}
+  .field input{
+    width:100%; padding:11px 12px; border-radius:7px; border:1px solid var(--line);
+    background:rgba(var(--text-rgb),0.04); color:var(--text); font-size:14px; font-family:var(--body);
+  }
+  .field input:focus{border-color:var(--gold); outline:none;}
+  .modal-note{font-size:12px; color:rgba(var(--text-rgb),0.45); margin-top:14px; text-align:center;}
+  .field.has-error input{border-color:var(--coral);}
+  .field-error{font-size:12px; color:var(--coral); margin-top:5px; display:none;}
+  .field.has-error .field-error{display:block;}
+  .modal-tabs{display:flex; gap:4px; background:var(--surface-alt); border-radius:8px; padding:4px; margin-bottom:20px;}
+  .modal-tab{flex:1; padding:9px; font-size:13px; font-weight:600; border-radius:6px; background:transparent; border:none; color:rgba(var(--text-rgb),0.55);}
+  .modal-tab.active{background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15);}
+  .modal-form{display:none;}
+  .modal-form.active{display:block;}
+  .account-chip{
+    display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px;
+    border:1px solid var(--line); background:transparent; font-size:13.5px; font-weight:600; color:var(--text);
+  }
+  .account-chip .avatar{
+    width:22px; height:22px; border-radius:50%; background:var(--gold); color:var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;
+  }
+  .account-menu{
+    position:relative;
+  }
+  .account-dropdown{
+    position:absolute; top:calc(100% + 8px); right:0; background:var(--surface); border:1px solid var(--line);
+    border-radius:10px; min-width:180px; padding:8px; display:none; box-shadow:0 12px 30px -8px rgba(0,0,0,0.3); z-index:60;
+  }
+  .account-dropdown.open{display:block;}
+  .account-dropdown .ad-item{
+    display:block; width:100%; text-align:left; padding:9px 10px; border-radius:6px; font-size:13px;
+    background:transparent; border:none; color:var(--text);
+  }
+  .account-dropdown .ad-item:hover{background:var(--surface-alt);}
+
+  /* ===== bet slip toast (cosmetic) ===== */
+  .slip-toast{
+    position:fixed; bottom:22px; right:22px; z-index:90;
+    background:var(--gold); color:var(--ink); border-radius:10px;
+    padding:14px 18px; font-size:13.5px; font-weight:600;
+    box-shadow:0 20px 40px -12px rgba(0,0,0,0.5);
+    display:flex; align-items:center; gap:10px;
+    transform:translateY(140%); opacity:0; transition:all .35s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .slip-toast.show{transform:translateY(0); opacity:1;}
+
+  @media (max-width:860px){
+    nav.links{display:none;}
+    .menu-toggle{display:block;}
+    .hero-inner{grid-template-columns:1fr; padding-top:40px;}
+    .steps{grid-template-columns:1fr 1fr;}
+    .rg{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .match{grid-template-columns:1fr; text-align:left;}
+    .odds-row{overflow-x:auto;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">LIVE FIXTURE DATA, DEMO PLATFORM — real upcoming matches, odds estimated from current form · no accounts, deposits, or wagers are processed on this page</div>
+
+<header class="nav">
+  <div class="nav-inner wrap">
+    <div class="logo"><span>Saccaia</span><span class="dot">•</span><span>Bet</span></div>
+    <nav class="links">
+      <a href="saccaia-bet-demo.html" class="nav-active">Bet</a>
+      <a href="saccaia-trading-demo.html">Trading</a>
+      <a href="#wallet">Wallet</a>
+      <a href="#live">Live</a>
+      <a href="#markets">Markets</a>
+      <a href="#spin">Spin</a>
+      <a href="#aviator">Aviator</a>
+      <a href="#how">How it works</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+      <div class="logged-out-actions" id="loggedOutActions">
+        <button class="btn" id="loginBtn">Log in</button>
+        <button class="btn btn-gold" id="signupBtn">Sign up</button>
+      </div>
+      <div class="account-menu" id="accountMenu" style="display:none;">
+        <button class="account-chip" id="accountChip">
+          <span class="avatar" id="accountAvatar">D</span>
+          <span id="accountName">Demo User</span>
+        </button>
+        <div class="account-dropdown" id="accountDropdown">
+          <button class="ad-item" id="logoutBtn">Log out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner wrap">
+    <div>
+      <div class="eyebrow"><span class="live-pip"></span> Real fixtures, Aug 21–25 2026 · odds are estimates</div>
+      <h1>Know the odds.<br>Back your <span class="accent">read</span> of the game.</h1>
+      <p class="hero-sub">Saccaia Bet is a straightforward sports-betting experience — clear odds, a simple slip, and a running record of every bet you place. This page is a visual prototype: fixtures are real, wagering is not.</p>
+      <div class="hero-cta">
+        <button class="btn btn-gold btn-lg" id="heroSignup">Create demo account</button>
+        <a href="#markets" class="btn btn-lg">See today's markets</a>
+      </div>
+    </div>
+
+    <div class="scoreboard">
+      <div class="scoreboard-head"><span>Featured — Premier League</span><span>Live fixtures</span></div>
+      <div class="flip-row">
+        <div class="fixture">Arsenal <span class="vs">vs</span> Coventry City</div>
+        <div class="flip-tile">1.17</div>
+        <div class="flip-tile">7.31</div>
+        <div class="flip-tile">14.97</div>
+      </div>
+      <div class="flip-row">
+        <div class="fixture">Man City <span class="vs">vs</span> Bournemouth</div>
+        <div class="flip-tile">1.46</div>
+        <div class="flip-tile">4.97</div>
+        <div class="flip-tile">5.79</div>
+      </div>
+      <div class="flip-row">
+        <div class="fixture">Newcastle <span class="vs">vs</span> Liverpool</div>
+        <div class="flip-tile">3.71</div>
+        <div class="flip-tile">3.92</div>
+        <div class="flip-tile">1.87</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="live">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Live &amp; recent scores</h2>
+      <div class="section-note">Real La Liga results and today's fixture · odds are estimates, in-play activates at kickoff</div>
+    </div>
+
+    <div class="results-strip">
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Alaves</span><span class="rc-score">3</span></div>
+        <div class="rc-row"><span>Getafe</span><span class="rc-score">0</span></div>
+        <div class="rc-ft">Sat Aug 15</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Sevilla</span><span class="rc-score">2</span></div>
+        <div class="rc-row"><span>Rayo Vallecano</span><span class="rc-score">1</span></div>
+        <div class="rc-ft">Sat Aug 15</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Espanyol</span><span class="rc-score">3</span></div>
+        <div class="rc-row"><span>Levante</span><span class="rc-score">0</span></div>
+        <div class="rc-ft">Sun Aug 16</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Deportivo La Coruna</span><span class="rc-score">1</span></div>
+        <div class="rc-row"><span>Elche</span><span class="rc-score">1</span></div>
+        <div class="rc-ft">Mon Aug 17</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Atletico Madrid</span><span class="rc-score">2</span></div>
+        <div class="rc-row"><span>Malaga</span><span class="rc-score">0</span></div>
+        <div class="rc-ft">Wed Aug 19</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Rayo Vallecano</span><span class="rc-score">1</span></div>
+        <div class="rc-row"><span>Alaves</span><span class="rc-score">1</span></div>
+        <div class="rc-ft">Thu Aug 20</div>
+      </div>
+    </div>
+
+    <div class="live-card" id="liveCard" data-kickoff="2026-08-21T19:00:00Z">
+      <div class="live-card-head">
+        <span class="live-badge" id="liveBadge"><span class="dot"></span><span id="liveBadgeText">Pre-match</span></span>
+        <span class="live-meta" id="liveMeta">Kicks off Fri Aug 21, 10:00 PM EAT</span>
+      </div>
+      <div class="live-fixture">Real Betis vs Real Sociedad</div>
+      <div class="live-meta">La Liga · matchday fixture</div>
+      <div class="live-odds">
+        <button class="odd-btn"><span class="lbl">1</span><span class="val">2.03</span></button>
+        <button class="odd-btn"><span class="lbl">X</span><span class="val">3.52</span></button>
+        <button class="odd-btn"><span class="lbl">2</span><span class="val">3.52</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="wallet">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Wallet</h2>
+      <div class="section-note">Switch between your wallet and your bet slip — demo balance, no real funds</div>
+    </div>
+
+    <div class="wallet-card">
+      <div class="wallet-tabs">
+        <button class="wallet-tab active" data-pane="walletPane">Wallet</button>
+        <button class="wallet-tab" data-pane="slipPane">Bet Slip</button>
+      </div>
+      <div class="wallet-pane active" id="walletPane">
+        <div class="wallet-balance-lbl">Demo balance</div>
+        <div class="wallet-balance">KES 10,000.00</div>
+        <div class="wallet-actions">
+          <button class="btn btn-gold" id="depositBtn">Deposit</button>
+          <button class="btn" id="withdrawBtn">Withdraw</button>
+        </div>
+      </div>
+      <div class="wallet-pane" id="slipPane">
+        <div class="wallet-balance-lbl">Bet slip</div>
+        <div class="slip-empty" id="slipEmptyMsg">No selections yet — tap any odds button to add it here (demo only).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="markets">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Today's markets</h2>
+      <div class="section-note">Fixtures are real (Premier League &amp; La Liga, Aug 21–25 2026) · odds are estimates derived from current win-probability models, not a licensed live feed</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Football</button>
+      <button class="tab">Rugby</button>
+      <button class="tab">Basketball</button>
+      <button class="tab">Athletics</button>
+      <button class="tab">Tennis</button>
+    </div>
+
+    <div class="matches" id="matches">
+      <div class="match">
+        <div class="match-time"><span class="today">Fri</span>22:00 EAT</div>
+        <div class="match-teams"><span class="league">Premier League</span>Arsenal vs Coventry City</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">1.17</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">7.31</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">14.97</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time">Sat · 14:30 EAT</div>
+        <div class="match-teams"><span class="league">Premier League</span>Hull City vs Manchester United</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">8.06</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">5.21</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">1.34</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time">Sun · 16:00 EAT</div>
+        <div class="match-teams"><span class="league">Premier League</span>Manchester City vs Bournemouth</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">1.46</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">4.97</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">5.79</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time">Sun · 18:30 EAT</div>
+        <div class="match-teams"><span class="league">Premier League</span>Newcastle United vs Liverpool</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">3.71</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">3.92</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">1.87</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time">Sat · 22:30 EAT</div>
+        <div class="match-teams"><span class="league">La Liga</span>Espanyol vs Real Madrid</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">7.26</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">4.89</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">1.39</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time">Sun · 22:30 EAT</div>
+        <div class="match-teams"><span class="league">La Liga</span>Elche vs Barcelona</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">8.66</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">6.05</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">1.28</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="spin">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Spin &amp; Win</h2>
+      <div class="section-note">Demo bonus wheel — no real prizes or funds</div>
+    </div>
+    <div class="spin-wrap">
+      <div class="wheel-outer">
+        <div class="wheel-pointer"></div>
+        <svg id="spinWheel" viewBox="0 0 200 200">
+          <g id="wheelSegments"></g>
+          <circle cx="100" cy="100" r="98" fill="none" stroke="var(--line)" stroke-width="2"/>
+        </svg>
+        <button class="spin-btn" id="spinBtn">SPIN</button>
+      </div>
+      <div class="spin-info">
+        <h3>Free daily spin</h3>
+        <p>One demo spin per visit — land on a bonus, a free bet token, or try again. Purely cosmetic; nothing here is a real prize or real money.</p>
+        <div class="spin-result" id="spinResult"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="aviator">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Aviator — crash game</h2>
+      <div class="section-note">Simulated round, sample data only — not a real money game</div>
+    </div>
+
+    <div class="aviator-wrap">
+      <div class="aviator-history" id="avHistory"></div>
+
+      <div class="aviator-stage">
+        <svg id="curveSvg" viewBox="0 0 600 280" preserveAspectRatio="none">
+          <path id="curvePath" d="M 0 280 L 0 280" stroke="#F2A93B" stroke-width="3" fill="none"/>
+          <path id="curveFill" d="M 0 280 L 0 280 L 0 280 Z" fill="url(#curveGrad)" opacity="0.35"/>
+          <defs>
+            <linearGradient id="curveGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#F2A93B"/>
+              <stop offset="100%" stop-color="#F2A93B" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="plane-emoji" id="planeEmoji" style="left:0%; bottom:0%;">✈️</div>
+        <div class="multiplier-display">
+          <div class="mult" id="multVal">1.00x</div>
+          <div class="status" id="multStatus">Round starting…</div>
+        </div>
+        <div class="round-caption" id="roundCaption">Round #4821 · demo simulation</div>
+      </div>
+
+      <div class="aviator-panels">
+        <div class="bet-panel">
+          <div class="bet-panel-head">
+            <span>Bet 1</span>
+            <span class="gg-badge">GG WIN</span>
+          </div>
+          <div class="stake-row">
+            <input class="stake-input" type="text" value="100" id="stake1">
+          </div>
+          <div class="stake-btns">
+            <button class="stake-chip" data-target="stake1" data-val="50">+50</button>
+            <button class="stake-chip" data-target="stake1" data-val="100">+100</button>
+            <button class="stake-chip" data-target="stake1" data-val="500">+500</button>
+            <button class="stake-chip" data-target="stake1" data-val="0" data-reset="1">Clear</button>
+          </div>
+          <div class="auto-row">
+            <span>Auto cash out at</span>
+            <input type="text" value="2.00x" id="auto1">
+          </div>
+          <button class="bet-action" id="betBtn1">
+            Place bet
+            <span class="sub">Stake locks in when round starts</span>
+          </button>
+        </div>
+
+        <div class="bet-panel">
+          <div class="bet-panel-head">
+            <span>Bet 2 — All Bet</span>
+            <span class="gg-badge">GG WIN</span>
+          </div>
+          <div class="stake-row">
+            <input class="stake-input" type="text" value="200" id="stake2">
+          </div>
+          <div class="stake-btns">
+            <button class="stake-chip" data-target="stake2" data-val="50">+50</button>
+            <button class="stake-chip" data-target="stake2" data-val="100">+100</button>
+            <button class="stake-chip" data-target="stake2" data-val="500">+500</button>
+            <button class="stake-chip" data-target="stake2" data-val="0" data-reset="1">Clear</button>
+          </div>
+          <div class="auto-row">
+            <span>Auto cash out at</span>
+            <input type="text" value="3.00x" id="auto2">
+          </div>
+          <button class="bet-action" id="allBetBtn">
+            All Bet — max stake
+            <span class="sub">Uses your full demo balance</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="aviator-footer">
+        <span>Demo balance: KES 10,000.00 (simulated)</span>
+        <span>Round results are generated locally in your browser for preview purposes</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head"><h2>How Saccaia Bet works</h2></div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Verify your account</h3>
+        <p>Sign up with ID and age verification, as required before any real-money account can be activated.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Fund your wallet</h3>
+        <p>Add money through supported mobile-money and bank channels, with limits you control.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Build your slip</h3>
+        <p>Pick your markets, set your stake, and see your potential return before you confirm.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h3>Track & withdraw</h3>
+        <p>Follow open bets live and cash out winnings straight back to your wallet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="responsible">
+  <div class="wrap">
+    <div class="rg">
+      <div>
+        <h2>Play within your limits</h2>
+        <p>Betting should stay entertainment, not a way to make money or solve financial pressure. Saccaia Bet is built for adults 18+ only, with tools to keep play in check.</p>
+        <div class="rg-tags">
+          <span class="rg-tag">Deposit limits</span>
+          <span class="rg-tag">Self-exclusion</span>
+          <span class="rg-tag">Reality checks</span>
+          <span class="rg-tag">Cool-off periods</span>
+          <span class="rg-tag">18+ verification</span>
+        </div>
+      </div>
+      <div class="rg-card">
+        <div class="rg-num">18+</div>
+        <div class="rg-lbl">Minimum age, verified at signup</div>
+        <div class="rg-divider"></div>
+        <div class="rg-num">24/7</div>
+        <div class="rg-lbl">Access to support resources</div>
+        <div class="rg-divider"></div>
+        <div class="rg-num">1</div>
+        <div class="rg-lbl">Tap to pause or self-exclude</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo"><span>Saccaia</span><span class="dot">•</span><span>Bet</span></div>
+        <p>A visual demo of a sports-betting product experience. No real wagering, deposits, or withdrawals happen on this page.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#markets">Markets</a>
+        <a href="#how">How it works</a>
+        <a href="#">Odds guide</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#responsible">Play safe</a>
+        <a href="#">Help centre</a>
+        <a href="#">Contact us</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Terms of use</a>
+        <a href="#">Privacy policy</a>
+        <a href="#">Licensing status</a>
+      </div>
+    </div>
+    <div class="footer-bottom wrap" style="padding:0;">
+      <span>© 2026 Saccaia Bet — demo prototype, not a licensed operator</span>
+      <span>Gambling can be addictive. Play responsibly. 18+</span>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Welcome back</h3>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-form="loginForm">Log in</button>
+      <button class="modal-tab" data-form="signupForm">Sign up</button>
+    </div>
+
+    <form class="modal-form active" id="loginForm" novalidate>
+      <div class="field" id="loginEmailField">
+        <label>Email</label>
+        <input type="text" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+        <div class="field-error">Enter a valid email address.</div>
+      </div>
+      <div class="field" id="loginPasswordField">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+        <div class="field-error">Password must be at least 6 characters.</div>
+      </div>
+      <button type="submit" class="btn btn-gold btn-lg" style="width:100%; margin-top:6px;">Log in</button>
+      <p class="modal-note">This is a cosmetic demo form — no account is created and no data is sent anywhere.</p>
+    </form>
+
+    <form class="modal-form" id="signupForm" novalidate>
+      <div class="field" id="signupNameField">
+        <label>Full name</label>
+        <input type="text" id="signupName" placeholder="Jane Wanjiru" autocomplete="name">
+        <div class="field-error">Enter your name.</div>
+      </div>
+      <div class="field" id="signupEmailField">
+        <label>Email</label>
+        <input type="text" id="signupEmail" placeholder="you@example.com" autocomplete="email">
+        <div class="field-error">Enter a valid email address.</div>
+      </div>
+      <div class="field" id="signupPasswordField">
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="••••••••" autocomplete="new-password">
+        <div class="field-error">Password must be at least 6 characters.</div>
+      </div>
+      <div class="field" id="signupConfirmField">
+        <label>Confirm password</label>
+        <input type="password" id="signupConfirm" placeholder="••••••••" autocomplete="new-password">
+        <div class="field-error">Passwords don't match.</div>
+      </div>
+      <button type="submit" class="btn btn-gold btn-lg" style="width:100%; margin-top:6px;">Create demo account</button>
+      <p class="modal-note">This is a cosmetic demo form — no account is created and no data is sent anywhere.</p>
+    </form>
+  </div>
+</div>
+
+<div class="slip-toast" id="slipToast">Added to bet slip (demo only)</div>
+
+<script>
+  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
+  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
+  const backdrop = document.getElementById('modalBackdrop');
+  const modalTitle = document.getElementById('modalTitle');
+
+  function switchModalTab(formId){
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.form === formId));
+    document.querySelectorAll('.modal-form').forEach(f => f.classList.toggle('active', f.id === formId));
+    modalTitle.textContent = formId === 'signupForm' ? 'Create demo account' : 'Welcome back';
+  }
+  document.querySelectorAll('.modal-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchModalTab(tab.dataset.form));
+  });
+
+  const openModal = (formId) => { switchModalTab(formId || 'loginForm'); backdrop.classList.add('open'); };
+  document.getElementById('loginBtn').addEventListener('click', () => openModal('loginForm'));
+  document.getElementById('signupBtn').addEventListener('click', () => openModal('signupForm'));
+  document.getElementById('heroSignup').addEventListener('click', () => openModal('signupForm'));
+  document.getElementById('modalClose').addEventListener('click', () => backdrop.classList.remove('open'));
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) backdrop.classList.remove('open'); });
+
+  function setError(fieldId, show){
+    document.getElementById(fieldId).classList.toggle('has-error', show);
+  }
+  const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const emailOk = isValidEmail(email);
+    const passOk = password.length >= 6;
+    setError('loginEmailField', !emailOk);
+    setError('loginPasswordField', !passOk);
+    if(!emailOk || !passOk) return;
+    startFakeSession(email.split('@')[0]);
+  });
+
+  document.getElementById('signupForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirm = document.getElementById('signupConfirm').value;
+    const nameOk = name.length > 0;
+    const emailOk = isValidEmail(email);
+    const passOk = password.length >= 6;
+    const confirmOk = passOk && password === confirm;
+    setError('signupNameField', !nameOk);
+    setError('signupEmailField', !emailOk);
+    setError('signupPasswordField', !passOk);
+    setError('signupConfirmField', !confirmOk);
+    if(!nameOk || !emailOk || !passOk || !confirmOk) return;
+    startFakeSession(name);
+  });
+
+  function startFakeSession(name){
+    sessionStorage.setItem('saccaia-demo-user', name);
+    backdrop.classList.remove('open');
+    applySessionUI(name);
+    showToast('Signed in as ' + name + ' — demo session only, nothing was sent to a server');
+  }
+
+  function applySessionUI(name){
+    document.getElementById('loggedOutActions').style.display = 'none';
+    document.getElementById('accountMenu').style.display = 'block';
+    document.getElementById('accountName').textContent = name;
+    document.getElementById('accountAvatar').textContent = name.charAt(0).toUpperCase();
+  }
+
+  function clearSessionUI(){
+    document.getElementById('loggedOutActions').style.display = 'flex';
+    document.getElementById('accountMenu').style.display = 'none';
+    document.getElementById('accountDropdown').classList.remove('open');
+  }
+
+  document.getElementById('accountChip').addEventListener('click', () => {
+    document.getElementById('accountDropdown').classList.toggle('open');
+  });
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    sessionStorage.removeItem('saccaia-demo-user');
+    clearSessionUI();
+    showToast('Logged out (demo session ended)');
+  });
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('accountMenu');
+    if(menu.style.display !== 'none' && !menu.contains(e.target)){
+      document.getElementById('accountDropdown').classList.remove('open');
+    }
+  });
+
+  // Restore session on reload within the same tab
+  const existingUser = sessionStorage.getItem('saccaia-demo-user');
+  if(existingUser) applySessionUI(existingUser);
+
+  // Odds selection — cosmetic only, toggles style, updates bet slip pane, shows toast
+  function renderSlip(){
+    const selected = document.querySelectorAll('.odd-btn.selected');
+    const pane = document.getElementById('slipPane');
+    if(selected.length === 0){
+      pane.innerHTML = '<div class="wallet-balance-lbl">Bet slip</div><div class="slip-empty" id="slipEmptyMsg">No selections yet — tap any odds button to add it here (demo only).</div>';
+      return;
+    }
+    let rows = '';
+    selected.forEach(btn => {
+      const match = btn.closest('.match');
+      const liveCard = btn.closest('.live-card');
+      let teams = 'Selection';
+      if(match) teams = match.querySelector('.match-teams').textContent.trim();
+      else if(liveCard) teams = liveCard.querySelector('.live-fixture').textContent.trim();
+      const lbl = btn.querySelector('.lbl').textContent;
+      const val = btn.querySelector('.val').textContent;
+      rows += `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px;">
+        <span>${teams} <span style="color:rgba(var(--text-rgb),0.5);">(${lbl})</span></span>
+        <span style="font-family:var(--mono); font-weight:600; color:var(--gold-dim);">${val}</span>
+      </div>`;
+    });
+    pane.innerHTML = '<div class="wallet-balance-lbl">Bet slip (' + selected.length + ')</div>' + rows +
+      '<button class="btn btn-gold" style="width:100%; margin-top:16px;" id="placeSlipBtn">Place bet (demo)</button>';
+    const placeBtn = document.getElementById('placeSlipBtn');
+    if(placeBtn) placeBtn.addEventListener('click', () => showToast('This is a demo — no real bet was placed'));
+  }
+
+  document.querySelectorAll('.odd-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('selected');
+      if (btn.classList.contains('selected')) showToast('Added to bet slip (demo only)');
+      renderSlip();
+    });
+  });
+
+  // Sport tabs — cosmetic only
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // Wallet <-> Bet Slip switcher
+  document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
+    tabBtn.addEventListener('click', () => {
+      document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.wallet-pane').forEach(p => p.classList.remove('active'));
+      tabBtn.classList.add('active');
+      document.getElementById(tabBtn.dataset.pane).classList.add('active');
+    });
+  });
+  document.getElementById('depositBtn').addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
+  document.getElementById('withdrawBtn').addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
+
+  // ===== Spin & Win — cosmetic wheel, no real prizes =====
+  (function(){
+    const prizes = [
+      { label: '2x Odds', color: '#F2A93B' },
+      { label: 'Try Again', color: '#1B211F' },
+      { label: 'Free Bet', color: '#D6472E' },
+      { label: 'No Win', color: '#1B211F' },
+      { label: '5x Odds', color: '#C98A2C' },
+      { label: 'Try Again', color: '#1B211F' },
+      { label: 'Cashback', color: '#D6472E' },
+      { label: 'No Win', color: '#1B211F' }
+    ];
+    const seg = 360 / prizes.length;
+    const g = document.getElementById('wheelSegments');
+    if(!g) return;
+    prizes.forEach((p, i) => {
+      const start = i * seg;
+      const end = start + seg;
+      const x1 = 100 + 98 * Math.cos(Math.PI * (start - 90) / 180);
+      const y1 = 100 + 98 * Math.sin(Math.PI * (start - 90) / 180);
+      const x2 = 100 + 98 * Math.cos(Math.PI * (end - 90) / 180);
+      const y2 = 100 + 98 * Math.sin(Math.PI * (end - 90) / 180);
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M100,100 L${x1},${y1} A98,98 0 0,1 ${x2},${y2} Z`);
+      path.setAttribute('fill', p.color);
+      path.setAttribute('stroke', 'var(--surface)');
+      path.setAttribute('stroke-width', '1');
+      g.appendChild(path);
+
+      const mid = start + seg / 2;
+      const tx = 100 + 62 * Math.cos(Math.PI * (mid - 90) / 180);
+      const ty = 100 + 62 * Math.sin(Math.PI * (mid - 90) / 180);
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', tx);
+      text.setAttribute('y', ty);
+      text.setAttribute('fill', '#F4EFE2');
+      text.setAttribute('font-size', '9');
+      text.setAttribute('font-family', 'IBM Plex Mono, monospace');
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('transform', `rotate(${mid}, ${tx}, ${ty})`);
+      text.textContent = p.label;
+      g.appendChild(text);
+    });
+
+    const wheel = document.getElementById('spinWheel');
+    const spinBtn = document.getElementById('spinBtn');
+    const resultEl = document.getElementById('spinResult');
+    let currentRotation = 0;
+    let spun = false;
+
+    spinBtn.addEventListener('click', () => {
+      if(spun) return;
+      spun = true;
+      spinBtn.disabled = true;
+      resultEl.textContent = 'Spinning…';
+
+      const winIndex = Math.floor(Math.random() * prizes.length);
+      const targetMid = winIndex * seg + seg / 2;
+      // wheel spins clockwise; pointer is fixed at top (0deg)
+      const extraSpins = 5 * 360;
+      const rotation = currentRotation + extraSpins + (360 - targetMid);
+      currentRotation = rotation;
+      wheel.style.transform = `rotate(${rotation}deg)`;
+
+      setTimeout(() => {
+        const prize = prizes[winIndex];
+        resultEl.textContent = 'Landed on: ' + prize.label + ' (demo only — no real bonus applied)';
+        showToast('Spin result: ' + prize.label + ' (demo)');
+      }, 4600);
+    });
+  })();
+
+  // Live badge — flips to LIVE based on the real fixture kickoff time
+  (function(){
+    const card = document.getElementById('liveCard');
+    if(!card) return;
+    const badge = document.getElementById('liveBadge');
+    const badgeText = document.getElementById('liveBadgeText');
+    const kickoff = new Date(card.dataset.kickoff);
+    function updateLiveState(){
+      const now = new Date();
+      if(now >= kickoff){
+        badge.classList.add('is-live');
+        badgeText.textContent = 'Live';
+      } else {
+        badge.classList.remove('is-live');
+        badgeText.textContent = 'Pre-match';
+      }
+    }
+    updateLiveState();
+    setInterval(updateLiveState, 30000);
+  })();
+
+  // Dark mode toggle
+  const themeToggle = document.getElementById('themeToggle');
+  function applyTheme(theme){
+    if(theme === 'dark'){
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeToggle.textContent = '☀️';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      themeToggle.textContent = '🌙';
+    }
+  }
+  const savedTheme = localStorage.getItem('saccaia-theme') || 'light';
+  applyTheme(savedTheme);
+  themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem('saccaia-theme', next);
+  });
+
+  // Toast
+  let toastTimer;
+  function showToast(msg){
+    const toast = document.getElementById('slipToast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+
+  // ===== Aviator — local, cosmetic simulation only. No real money, no server, no real RNG-backed outcome. =====
+  (function(){
+    const multVal = document.getElementById('multVal');
+    const multStatus = document.getElementById('multStatus');
+    const roundCaption = document.getElementById('roundCaption');
+    const plane = document.getElementById('planeEmoji');
+    const curvePath = document.getElementById('curvePath');
+    const curveFill = document.getElementById('curveFill');
+    const historyRow = document.getElementById('avHistory');
+    const betBtn1 = document.getElementById('betBtn1');
+    const allBetBtn = document.getElementById('allBetBtn');
+
+    let roundNum = 4821;
+    let multiplier = 1.00;
+    let crashPoint = 1.0;
+    let phase = 'waiting'; // waiting | flying | crashed
+    let bet1Placed = false, bet2Placed = false;
+    let rafId;
+
+    // seed some history pills
+    const seedHistory = [1.24, 2.87, 1.05, 6.42, 1.98, 1.11, 3.30, 1.67, 12.05, 1.02];
+    seedHistory.forEach(v => addHistoryPill(v));
+
+    function addHistoryPill(v){
+      const pill = document.createElement('div');
+      pill.className = 'hist-pill' + (v >= 10 ? ' big' : v >= 2 ? ' win' : '');
+      pill.textContent = v.toFixed(2) + 'x';
+      historyRow.appendChild(pill);
+      historyRow.scrollLeft = historyRow.scrollWidth;
+    }
+
+    function randomCrashPoint(){
+      // simple demo-only distribution, skewed toward lower multipliers
+      const r = Math.random();
+      const val = 0.98 / (1 - r * 0.97);
+      return Math.max(1.00, Math.min(val, 40));
+    }
+
+    function resetStage(){
+      curvePath.setAttribute('d', 'M 0 280 L 0 280');
+      curveFill.setAttribute('d', 'M 0 280 L 0 280 L 0 280 Z');
+      plane.style.left = '0%';
+      plane.style.bottom = '0%';
+      multVal.textContent = '1.00x';
+      multVal.classList.remove('flying','crashed');
+    }
+
+    function startWaiting(){
+      phase = 'waiting';
+      bet1Placed = false; bet2Placed = false;
+      betBtn1.textContent = ''; 
+      betBtn1.innerHTML = 'Place bet<span class="sub">Stake locks in when round starts</span>';
+      allBetBtn.innerHTML = 'All Bet — max stake<span class="sub">Uses your full demo balance</span>';
+      betBtn1.classList.remove('placed');
+      allBetBtn.classList.remove('placed');
+      resetStage();
+      multStatus.textContent = 'Round starting…';
+      roundCaption.textContent = 'Round #' + roundNum + ' · waiting for next round';
+      let count = 3;
+      const waitTimer = setInterval(() => {
+        multStatus.textContent = 'Starts in ' + count + '…';
+        count--;
+        if(count < 0){
+          clearInterval(waitTimer);
+          startFlight();
+        }
+      }, 700);
+    }
+
+    function startFlight(){
+      phase = 'flying';
+      roundNum++;
+      multiplier = 1.00;
+      crashPoint = randomCrashPoint();
+      multStatus.textContent = 'Flying…';
+      multVal.classList.add('flying');
+      roundCaption.textContent = 'Round #' + roundNum + ' · demo simulation';
+      const startTime = performance.now();
+
+      function tick(now){
+        const t = (now - startTime) / 1000;
+        multiplier = 1 + 0.06 * t * t + 0.15 * t;
+
+        if(multiplier >= crashPoint){
+          crashNow();
+          return;
+        }
+
+        multVal.textContent = multiplier.toFixed(2) + 'x';
+
+        // draw curve — simple ease-out path across the stage
+        const progress = Math.min(t / 6, 1); // visual progress cap
+        const w = 600, h = 280;
+        const x = progress * w;
+        const y = h - Math.min(progress * progress * h * 1.4, h - 20);
+        curvePath.setAttribute('d', `M 0 ${h} Q ${x*0.5} ${h}, ${x} ${y}`);
+        curveFill.setAttribute('d', `M 0 ${h} Q ${x*0.5} ${h}, ${x} ${y} L ${x} ${h} Z`);
+        plane.style.left = Math.min((x/w)*100, 92) + '%';
+        plane.style.bottom = Math.min(((h-y)/h)*82, 78) + '%';
+
+        // auto cash-out check (cosmetic)
+        checkAutoCashout('auto1', bet1Placed, betBtn1, (v)=>bet1Placed=v);
+        checkAutoCashout('auto2', bet2Placed, allBetBtn, (v)=>bet2Placed=v);
+
+        rafId = requestAnimationFrame(tick);
+      }
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function checkAutoCashout(inputId, placed, btn, setter){
+      if(!placed) return;
+      const raw = document.getElementById(inputId).value.replace('x','').trim();
+      const target = parseFloat(raw);
+      if(!isNaN(target) && multiplier >= target){
+        setter(false);
+        btn.classList.remove('placed');
+        btn.innerHTML = 'Cashed out at ' + multiplier.toFixed(2) + 'x<span class="sub">Demo winnings credited</span>';
+        showToast('Cashed out at ' + multiplier.toFixed(2) + 'x (demo)');
+      }
+    }
+
+    function crashNow(){
+      phase = 'crashed';
+      cancelAnimationFrame(rafId);
+      multVal.textContent = crashPoint.toFixed(2) + 'x';
+      multVal.classList.remove('flying');
+      multVal.classList.add('crashed');
+      multStatus.textContent = 'Flew away!';
+      addHistoryPill(crashPoint);
+
+      if(bet1Placed){
+        betBtn1.innerHTML = 'Round crashed — lost stake<span class="sub">Demo balance adjusted</span>';
+      }
+      if(bet2Placed){
+        allBetBtn.innerHTML = 'Round crashed — lost stake<span class="sub">Demo balance adjusted</span>';
+      }
+
+      setTimeout(startWaiting, 2200);
+    }
+
+    // stake chips
+    document.querySelectorAll('.stake-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const target = document.getElementById(chip.dataset.target);
+        if(chip.dataset.reset){
+          target.value = '0';
+        } else {
+          const cur = parseInt(target.value) || 0;
+          target.value = cur + parseInt(chip.dataset.val);
+        }
+      });
+    });
+
+    // place bet buttons — cosmetic
+    betBtn1.addEventListener('click', () => {
+      if(phase !== 'waiting'){ showToast('Wait for the next round to place a bet'); return; }
+      bet1Placed = !bet1Placed;
+      betBtn1.classList.toggle('placed', bet1Placed);
+      betBtn1.innerHTML = bet1Placed
+        ? 'Cancel bet<span class="sub">Stake: KES ' + (document.getElementById('stake1').value || 0) + '</span>'
+        : 'Place bet<span class="sub">Stake locks in when round starts</span>';
+      if(bet1Placed) showToast('Bet placed for next round (demo)');
+    });
+
+    allBetBtn.addEventListener('click', () => {
+      if(phase !== 'waiting'){ showToast('Wait for the next round to place a bet'); return; }
+      document.getElementById('stake2').value = '10000';
+      bet2Placed = !bet2Placed;
+      allBetBtn.classList.toggle('placed', bet2Placed);
+      allBetBtn.innerHTML = bet2Placed
+        ? 'Cancel All Bet<span class="sub">Full demo balance staked</span>'
+        : 'All Bet — max stake<span class="sub">Uses your full demo balance</span>';
+      if(bet2Placed) showToast('All Bet placed — full demo balance staked');
+    });
+
+    startWaiting();
+  })();
+</script>
+
+</body>
+</html>
