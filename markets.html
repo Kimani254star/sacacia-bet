@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Acacia Bet — Home</title>
+<title>Acacia Bet — Markets</title>
 <style>
   :root{
     --bg: #FFFFFF;
@@ -562,8 +562,8 @@
   <div class="nav-inner wrap">
     <div class="logo"><span>Acacia</span><span class="dot">•</span><span>Bet</span></div>
     <nav class="links">
-      <a href="index.html" class="nav-active">Home</a>
-      <a href="markets.html">Markets</a>
+      <a href="index.html">Home</a>
+      <a href="markets.html" class="nav-active">Markets</a>
       <a href="games.html">Games</a>
       <a href="wallet.html">Wallet</a>
       <a href="how.html">How it works</a>
@@ -588,37 +588,136 @@
   </div>
 </header>
 
-<section class="hero">
-  <div class="hero-inner wrap">
-    <div>
-      <div class="eyebrow"><span class="live-pip"></span> Real fixtures, Aug 22–26 2026 · odds are estimates</div>
-      <h1>Know the odds.<br>Back your <span class="accent">read</span> of the game.</h1>
-      <p class="hero-sub">Acacia Bet is a straightforward sports-betting experience — clear odds, a simple slip, and a running record of every bet you place. This page is a visual prototype: fixtures are real, wagering is not.</p>
-      <div class="hero-cta">
-        <button class="btn btn-gold btn-lg" id="heroSignup">Create demo account</button>
-        <a href="markets.html" class="btn btn-lg">See today's markets</a>
+<section id="live">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Live &amp; recent scores</h2>
+      <div class="section-note">Real La Liga results and today's fixture · odds are estimates, in-play activates at kickoff</div>
+    </div>
+
+    <div class="results-strip">
+      <div class="result-chip">
+        <div class="rc-league">Premier League · Final</div>
+        <div class="rc-row"><span>Arsenal</span><span class="rc-score">3</span></div>
+        <div class="rc-row"><span>Coventry City</span><span class="rc-score">0</span></div>
+        <div class="rc-ft">Fri Aug 21</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Real Betis</span><span class="rc-score">1</span></div>
+        <div class="rc-row"><span>Real Sociedad</span><span class="rc-score">0</span></div>
+        <div class="rc-ft">Fri Aug 21</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Rayo Vallecano</span><span class="rc-score">1</span></div>
+        <div class="rc-row"><span>Alaves</span><span class="rc-score">1</span></div>
+        <div class="rc-ft">Thu Aug 20</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Atletico Madrid</span><span class="rc-score">2</span></div>
+        <div class="rc-row"><span>Malaga</span><span class="rc-score">0</span></div>
+        <div class="rc-ft">Wed Aug 19</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Deportivo La Coruna</span><span class="rc-score">1</span></div>
+        <div class="rc-row"><span>Elche</span><span class="rc-score">1</span></div>
+        <div class="rc-ft">Mon Aug 17</div>
+      </div>
+      <div class="result-chip">
+        <div class="rc-league">La Liga · Final</div>
+        <div class="rc-row"><span>Espanyol</span><span class="rc-score">3</span></div>
+        <div class="rc-row"><span>Levante</span><span class="rc-score">0</span></div>
+        <div class="rc-ft">Sun Aug 16</div>
       </div>
     </div>
 
-    <div class="scoreboard">
-      <div class="scoreboard-head"><span>Featured — Premier League</span><span>Live fixtures</span></div>
-      <div class="flip-row">
-        <div class="fixture">Hull City <span class="vs">vs</span> Man United</div>
-        <div class="flip-tile">8.35</div>
-        <div class="flip-tile">5.55</div>
-        <div class="flip-tile">1.32</div>
+    <div class="live-card" id="liveCard" data-kickoff="2026-08-22T19:30:00Z">
+      <div class="live-card-head">
+        <span class="live-badge" id="liveBadge"><span class="dot"></span><span id="liveBadgeText">Pre-match</span></span>
+        <span class="live-meta" id="liveMeta">Kicks off Sat Aug 22, 10:30 PM EAT</span>
       </div>
-      <div class="flip-row">
-        <div class="fixture">Man City <span class="vs">vs</span> Bournemouth</div>
-        <div class="flip-tile">1.43</div>
-        <div class="flip-tile">5.10</div>
-        <div class="flip-tile">6.05</div>
+      <div class="live-fixture">Espanyol vs Real Madrid</div>
+      <div class="live-meta">La Liga · matchday fixture</div>
+      <div class="live-odds">
+        <button class="odd-btn"><span class="lbl">1</span><span class="val">7.26</span></button>
+        <button class="odd-btn"><span class="lbl">X</span><span class="val">5.02</span></button>
+        <button class="odd-btn"><span class="lbl">2</span><span class="val">1.38</span></button>
       </div>
-      <div class="flip-row">
-        <div class="fixture">Newcastle <span class="vs">vs</span> Liverpool</div>
-        <div class="flip-tile">3.76</div>
-        <div class="flip-tile">3.90</div>
-        <div class="flip-tile">1.86</div>
+    </div>
+  </div>
+</section>
+<section id="markets">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Today's markets</h2>
+      <div class="section-note">Fixtures are real (Premier League &amp; La Liga, Aug 22–26 2026) · odds are estimates derived from current win-probability models, not a licensed live feed</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Football</button>
+      <button class="tab">Rugby</button>
+      <button class="tab">Basketball</button>
+      <button class="tab">Athletics</button>
+      <button class="tab">Tennis</button>
+    </div>
+
+    <div class="matches" id="matches">
+      <div class="match">
+        <div class="match-time"><span class="today">Today</span>14:30 EAT</div>
+        <div class="match-teams"><span class="league">Premier League</span>Hull City vs Manchester United</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">8.35</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">5.55</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">1.32</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time"><span class="today">Today</span>17:00 EAT</div>
+        <div class="match-teams"><span class="league">Premier League</span>Everton vs Crystal Palace</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">2.21</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">3.38</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">3.21</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time"><span class="today">Today</span>19:30 EAT</div>
+        <div class="match-teams"><span class="league">Premier League</span>Brentford vs Tottenham</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">2.19</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">3.91</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">3.49</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time">Sun · 16:00 EAT</div>
+        <div class="match-teams"><span class="league">Premier League</span>Manchester City vs Bournemouth</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">1.43</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">5.10</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">6.05</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time">Sun · 18:30 EAT</div>
+        <div class="match-teams"><span class="league">Premier League</span>Newcastle United vs Liverpool</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">3.76</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">3.90</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">1.86</span></button>
+        </div>
+      </div>
+      <div class="match">
+        <div class="match-time">Sun · 22:30 EAT</div>
+        <div class="match-teams"><span class="league">La Liga</span>Elche vs Barcelona</div>
+        <div class="odds-row">
+          <button class="odd-btn"><span class="lbl">1</span><span class="val">8.28</span></button>
+          <button class="odd-btn"><span class="lbl">X</span><span class="val">5.90</span></button>
+          <button class="odd-btn"><span class="lbl">2</span><span class="val">1.30</span></button>
+        </div>
       </div>
     </div>
   </div>

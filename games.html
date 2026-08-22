@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Acacia Bet — Home</title>
+<title>Acacia Bet — Games</title>
 <style>
   :root{
     --bg: #FFFFFF;
@@ -556,15 +556,15 @@
 </head>
 <body>
 
-<div class="demo-banner">LIVE FIXTURE DATA, DEMO PLATFORM — real upcoming matches, odds estimated from current form · no accounts, deposits, or wagers are processed on this page</div>
+<div class="demo-banner">DEMO GAMES — Aviator and Spin & Win are cosmetic simulations only · no real money, no licensed RNG</div>
 
 <header class="nav">
   <div class="nav-inner wrap">
     <div class="logo"><span>Acacia</span><span class="dot">•</span><span>Bet</span></div>
     <nav class="links">
-      <a href="index.html" class="nav-active">Home</a>
+      <a href="index.html">Home</a>
       <a href="markets.html">Markets</a>
-      <a href="games.html">Games</a>
+      <a href="games.html" class="nav-active">Games</a>
       <a href="wallet.html">Wallet</a>
       <a href="how.html">How it works</a>
       <a href="trading.html">Trading</a>
@@ -588,37 +588,111 @@
   </div>
 </header>
 
-<section class="hero">
-  <div class="hero-inner wrap">
-    <div>
-      <div class="eyebrow"><span class="live-pip"></span> Real fixtures, Aug 22–26 2026 · odds are estimates</div>
-      <h1>Know the odds.<br>Back your <span class="accent">read</span> of the game.</h1>
-      <p class="hero-sub">Acacia Bet is a straightforward sports-betting experience — clear odds, a simple slip, and a running record of every bet you place. This page is a visual prototype: fixtures are real, wagering is not.</p>
-      <div class="hero-cta">
-        <button class="btn btn-gold btn-lg" id="heroSignup">Create demo account</button>
-        <a href="markets.html" class="btn btn-lg">See today's markets</a>
+<section id="spin">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Spin &amp; Win</h2>
+      <div class="section-note">Demo bonus wheel — no real prizes or funds</div>
+    </div>
+    <div class="spin-wrap">
+      <div class="wheel-outer">
+        <div class="wheel-pointer"></div>
+        <svg id="spinWheel" viewBox="0 0 200 200">
+          <g id="wheelSegments"></g>
+          <circle cx="100" cy="100" r="98" fill="none" stroke="var(--line)" stroke-width="2"/>
+        </svg>
+        <button class="spin-btn" id="spinBtn">SPIN</button>
+      </div>
+      <div class="spin-info">
+        <h3>Free daily spin</h3>
+        <p>One demo spin per visit — land on a bonus, a free bet token, or try again. Purely cosmetic; nothing here is a real prize or real money.</p>
+        <div class="spin-result" id="spinResult"></div>
       </div>
     </div>
+  </div>
+</section>
+<section id="aviator">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Aviator — crash game</h2>
+      <div class="section-note">Simulated round, sample data only — not a real money game</div>
+    </div>
 
-    <div class="scoreboard">
-      <div class="scoreboard-head"><span>Featured — Premier League</span><span>Live fixtures</span></div>
-      <div class="flip-row">
-        <div class="fixture">Hull City <span class="vs">vs</span> Man United</div>
-        <div class="flip-tile">8.35</div>
-        <div class="flip-tile">5.55</div>
-        <div class="flip-tile">1.32</div>
+    <div class="aviator-wrap">
+      <div class="aviator-history" id="avHistory"></div>
+
+      <div class="aviator-stage">
+        <svg id="curveSvg" viewBox="0 0 600 280" preserveAspectRatio="none">
+          <path id="curvePath" d="M 0 280 L 0 280" stroke="#F2A93B" stroke-width="3" fill="none"/>
+          <path id="curveFill" d="M 0 280 L 0 280 L 0 280 Z" fill="url(#curveGrad)" opacity="0.35"/>
+          <defs>
+            <linearGradient id="curveGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#F2A93B"/>
+              <stop offset="100%" stop-color="#F2A93B" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="plane-emoji" id="planeEmoji" style="left:0%; bottom:0%;">✈️</div>
+        <div class="multiplier-display">
+          <div class="mult" id="multVal">1.00x</div>
+          <div class="status" id="multStatus">Round starting…</div>
+        </div>
+        <div class="round-caption" id="roundCaption">Round #4821 · demo simulation</div>
       </div>
-      <div class="flip-row">
-        <div class="fixture">Man City <span class="vs">vs</span> Bournemouth</div>
-        <div class="flip-tile">1.43</div>
-        <div class="flip-tile">5.10</div>
-        <div class="flip-tile">6.05</div>
+
+      <div class="aviator-panels">
+        <div class="bet-panel">
+          <div class="bet-panel-head">
+            <span>Bet 1</span>
+            <span class="gg-badge">GG WIN</span>
+          </div>
+          <div class="stake-row">
+            <input class="stake-input" type="text" value="100" id="stake1">
+          </div>
+          <div class="stake-btns">
+            <button class="stake-chip" data-target="stake1" data-val="50">+50</button>
+            <button class="stake-chip" data-target="stake1" data-val="100">+100</button>
+            <button class="stake-chip" data-target="stake1" data-val="500">+500</button>
+            <button class="stake-chip" data-target="stake1" data-val="0" data-reset="1">Clear</button>
+          </div>
+          <div class="auto-row">
+            <span>Auto cash out at</span>
+            <input type="text" value="2.00x" id="auto1">
+          </div>
+          <button class="bet-action" id="betBtn1">
+            Place bet
+            <span class="sub">Stake locks in when round starts</span>
+          </button>
+        </div>
+
+        <div class="bet-panel">
+          <div class="bet-panel-head">
+            <span>Bet 2 — All Bet</span>
+            <span class="gg-badge">GG WIN</span>
+          </div>
+          <div class="stake-row">
+            <input class="stake-input" type="text" value="200" id="stake2">
+          </div>
+          <div class="stake-btns">
+            <button class="stake-chip" data-target="stake2" data-val="50">+50</button>
+            <button class="stake-chip" data-target="stake2" data-val="100">+100</button>
+            <button class="stake-chip" data-target="stake2" data-val="500">+500</button>
+            <button class="stake-chip" data-target="stake2" data-val="0" data-reset="1">Clear</button>
+          </div>
+          <div class="auto-row">
+            <span>Auto cash out at</span>
+            <input type="text" value="3.00x" id="auto2">
+          </div>
+          <button class="bet-action" id="allBetBtn">
+            All Bet — max stake
+            <span class="sub">Uses your full demo balance</span>
+          </button>
+        </div>
       </div>
-      <div class="flip-row">
-        <div class="fixture">Newcastle <span class="vs">vs</span> Liverpool</div>
-        <div class="flip-tile">3.76</div>
-        <div class="flip-tile">3.90</div>
-        <div class="flip-tile">1.86</div>
+
+      <div class="aviator-footer">
+        <span>Demo balance: KES 10,000.00 (simulated)</span>
+        <span>Round results are generated locally in your browser for preview purposes</span>
       </div>
     </div>
   </div>

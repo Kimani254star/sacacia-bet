@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acacia Trading — Markets</title>
+<style>
+  :root{
+    --bg: #FFFFFF;
+    --bg-rgb: 255,255,255;
+    --bg-alt: #F6F5F1;
+    --surface: #FFFFFF;
+    --surface-alt: #F1EFE8;
+    --text: #14181A;
+    --text-rgb: 20,24,26;
+    --ink: #14181A;
+    --gold: #F2A93B;
+    --gold-dim: #C98A2C;
+    --coral: #D6472E;
+    --mint: #1B9C6E;
+    --line: rgba(20,24,26,0.12);
+    --display: Cambria, Georgia, 'Times New Roman', serif;
+    --body: Cambria, Georgia, 'Times New Roman', serif;
+    --mono: Cambria, Georgia, 'Times New Roman', serif;
+    color-scheme: light;
+  }
+  [data-theme="dark"]{
+    --bg: #0B0D0C;
+    --bg-rgb: 11,13,12;
+    --bg-alt: #14181A;
+    --surface: #14181A;
+    --surface-alt: #1B211F;
+    --text: #F4EFE2;
+    --text-rgb: 244,239,226;
+    --ink: #14181A;
+    --coral: #FF6B52;
+    --mint: #4FD1A5;
+    --line: rgba(244,239,226,0.14);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; width:100%; overflow-x:hidden;}
+  body{width:100%; overflow-x:hidden;}
+  body{background: var(--bg); color: var(--text); font-family: var(--body); line-height:1.5; transition: background .2s, color .2s;}
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer;}
+  :focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  .wrap{max-width:1500px; margin:0 auto; padding:0 40px;}
+
+  .demo-banner{
+    background: var(--gold); color:var(--ink); font-family: var(--mono);
+    font-size:12.5px; font-weight:600; letter-spacing:.02em; text-align:center; padding:9px 16px;
+  }
+
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    background: rgba(var(--bg-rgb), 0.92); backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
+  .logo{font-family:var(--display); font-weight:800; font-size:24px; letter-spacing:.01em; display:flex; align-items:center; gap:8px;}
+  .logo .dot{color:var(--gold);}
+  nav.links{display:flex; gap:28px; font-size:14.5px; font-weight:500;}
+  nav.links a{color:rgba(var(--text-rgb),0.75); transition:color .15s;}
+  nav.links a:hover{color:var(--text);}
+  nav.links a.nav-active{color:var(--gold);}
+  .nav-actions{display:flex; gap:10px; align-items:center;}
+  .theme-toggle{
+    width:38px; height:38px; border-radius:8px; border:1px solid var(--line);
+    background:transparent; font-size:16px; display:flex; align-items:center; justify-content:center;
+    transition:all .15s;
+  }
+  .theme-toggle:hover{border-color:var(--gold);}
+  .btn{font-size:14px; font-weight:600; padding:10px 18px; border-radius:6px; border:1px solid var(--line); background:transparent; color:var(--text); transition:all .15s;}
+  .btn:hover{border-color:var(--text);}
+  .btn-gold{background:var(--gold); color:var(--ink); border-color:var(--gold);}
+  .btn-gold:hover{background:#ffbf5c; border-color:#ffbf5c;}
+
+  /* hero */
+  .hero{
+    position:relative; overflow:hidden;
+    background:
+      radial-gradient(ellipse 900px 500px at 80% -10%, rgba(242,169,59,0.14), transparent 60%),
+      linear-gradient(180deg, var(--surface-alt) 0%, var(--surface) 100%);
+    border-bottom:1px solid var(--line);
+  }
+  .hero-inner{padding:64px 24px 44px; display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; color:var(--gold-dim); letter-spacing:.12em;
+    text-transform:uppercase; margin-bottom:18px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow .live-pip{width:7px; height:7px; border-radius:50%; background:var(--mint); box-shadow:0 0 0 0 rgba(79,209,165,0.6); animation: pulse 1.8s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(79,209,165,0.55);} 70%{box-shadow:0 0 0 8px rgba(79,209,165,0);} 100%{box-shadow:0 0 0 0 rgba(79,209,165,0);}}
+  h1{font-family:var(--display); font-weight:800; font-size:clamp(38px,5vw,62px); line-height:0.97; letter-spacing:-.01em; margin-bottom:20px;}
+  h1 .accent{color:var(--gold);}
+  .hero-sub{font-size:16.5px; color:rgba(var(--text-rgb),0.72); max-width:46ch; margin-bottom:26px;}
+  .hero-cta{display:flex; gap:12px; flex-wrap:wrap;}
+  .btn-lg{padding:14px 26px; font-size:15px; border-radius:7px;}
+
+  .snapshot-card{
+    background:var(--bg); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  .snapshot-head{
+    display:flex; align-items:center; justify-content:space-between; padding:14px 18px;
+    border-bottom:1px solid var(--line); font-family:var(--mono); font-size:11.5px;
+    color:rgba(var(--text-rgb),0.55); text-transform:uppercase; letter-spacing:.08em;
+  }
+  .snap-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:14px 18px; border-bottom:1px solid var(--line);
+  }
+  .snap-row:last-child{border-bottom:none;}
+  .snap-pair{font-size:14px; font-weight:600;}
+  .snap-pair .full{display:block; font-family:var(--mono); font-size:10.5px; font-weight:500; color:rgba(var(--text-rgb),0.45); margin-top:2px;}
+  .snap-price{font-family:var(--mono); font-weight:700; font-size:15px; text-align:right;}
+  .snap-change{font-family:var(--mono); font-size:11.5px; text-align:right; margin-top:2px;}
+  .snap-change.up{color:var(--mint);}
+  .snap-change.down{color:var(--coral);}
+
+  /* ===== wallet / orders switcher ===== */
+  .wallet-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    max-width:520px;
+  }
+  .wallet-tabs{display:flex; border-bottom:1px solid var(--line);}
+  .wallet-tab{
+    flex:1; padding:14px; font-size:13.5px; font-weight:600; background:transparent; border:none;
+    color:rgba(var(--text-rgb),0.55); border-bottom:2px solid transparent;
+  }
+  .wallet-tab.active{color:var(--gold-dim); border-bottom-color:var(--gold);}
+  .wallet-pane{padding:22px; display:none;}
+  .wallet-pane.active{display:block;}
+  .wallet-balance{font-family:var(--display); font-weight:800; font-size:38px; margin-bottom:4px;}
+  .wallet-balance-lbl{font-family:var(--mono); font-size:11.5px; color:rgba(var(--text-rgb),0.5); text-transform:uppercase; letter-spacing:.06em; margin-bottom:18px;}
+  .wallet-actions{display:flex; gap:10px;}
+  .slip-empty{font-size:13.5px; color:rgba(var(--text-rgb),0.55); text-align:center; padding:20px 0;}
+
+  section{padding:60px 0;}
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:26px; flex-wrap:wrap;}
+  h2{font-family:var(--display); font-weight:700; font-size:clamp(26px,3.2vw,36px);}
+  .section-note{font-size:13.5px; color:rgba(var(--text-rgb),0.55); font-family:var(--mono);}
+
+  .tabs{display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;}
+  .live-toggle-row{margin-bottom:18px;}
+  .live-toggle{display:inline-flex; align-items:center; gap:10px; font-size:13px; font-family:var(--mono); color:rgba(var(--text-rgb),0.65); cursor:pointer;}
+  .lt-switch{
+    position:relative; width:38px; height:21px; border-radius:20px; background:rgba(var(--text-rgb),0.15); flex:0 0 auto;
+    transition:background .15s;
+  }
+  .lt-switch::after{
+    content:''; position:absolute; top:2px; left:2px; width:17px; height:17px; border-radius:50%;
+    background:var(--surface); box-shadow:0 1px 3px rgba(0,0,0,0.3); transition:left .15s;
+  }
+  .lt-switch.on{background:var(--mint);}
+  .lt-switch.on::after{left:19px;}
+  .flash-up{animation: flashUp .6s ease;}
+  .flash-down{animation: flashDown .6s ease;}
+  @keyframes flashUp{0%{background:rgba(27,156,110,0.18);} 100%{background:transparent;}}
+  @keyframes flashDown{0%{background:rgba(214,71,46,0.18);} 100%{background:transparent;}}
+  .tab{font-size:13.5px; font-weight:600; padding:8px 16px; border-radius:20px; border:1px solid var(--line); background:rgba(var(--text-rgb),0.03); color:rgba(var(--text-rgb),0.65);}
+  .tab.active{background:var(--gold); border-color:var(--gold); color:var(--ink);}
+
+  /* market table */
+  .market-table{border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  .mt-head, .mt-row{
+    display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap:12px; align-items:center;
+    padding:14px 20px;
+  }
+  .mt-head{
+    background:rgba(var(--text-rgb),0.03); font-family:var(--mono); font-size:11px;
+    text-transform:uppercase; letter-spacing:.06em; color:rgba(var(--text-rgb),0.45);
+  }
+  .mt-row{border-top:1px solid var(--line); background:var(--surface);}
+  .mt-instr{font-size:14.5px; font-weight:600;}
+  .mt-instr .sub{display:block; font-family:var(--mono); font-size:11px; font-weight:500; color:rgba(var(--text-rgb),0.45); margin-top:2px;}
+  .mt-val{font-family:var(--mono); font-size:14px; font-weight:600;}
+  .mt-change.up{color:var(--mint);}
+  .mt-change.down{color:var(--coral);}
+  .mt-actions{display:flex; gap:6px;}
+  .trade-btn{
+    font-family:var(--mono); font-size:12.5px; font-weight:700; padding:8px 14px;
+    border-radius:6px; border:1px solid var(--line); background:transparent; color:var(--text);
+    transition:all .15s;
+  }
+  .trade-btn.buy{border-color:rgba(79,209,165,0.4); color:var(--mint);}
+  .trade-btn.buy:hover{background:rgba(79,209,165,0.12);}
+  .trade-btn.sell{border-color:rgba(232,92,65,0.4); color:var(--coral);}
+  .trade-btn.sell:hover{background:rgba(232,92,65,0.12);}
+
+  /* chart mock */
+  .chart-panel{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px; margin-top:20px;
+  }
+  .chart-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:10px;}
+  .chart-title{font-family:var(--display); font-weight:700; font-size:22px;}
+  .chart-price{font-family:var(--mono); font-size:26px; font-weight:700; color:var(--gold);}
+  .chart-svg-wrap{width:100%; height:180px;}
+  .chart-timeframes{display:flex; gap:6px; margin-top:14px;}
+  .tf-chip{font-family:var(--mono); font-size:11.5px; padding:6px 12px; border-radius:6px; border:1px solid var(--line); background:transparent; color:rgba(var(--text-rgb),0.55);}
+  .tf-chip.active{background:var(--gold); border-color:var(--gold); color:var(--ink);}
+
+  /* how it works reuse */
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .step{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px;}
+  .step-num{font-family:var(--display); font-size:34px; font-weight:800; color:var(--gold); margin-bottom:10px;}
+  .step h3{font-size:16px; margin-bottom:8px; font-weight:600;}
+  .step p{font-size:13.5px; color:rgba(var(--text-rgb),0.6);}
+
+  .rg{
+    background: linear-gradient(180deg, var(--surface-alt) 0%, var(--surface) 100%);
+    border:1px solid var(--line); border-radius:16px; padding:40px;
+    display:grid; grid-template-columns:1.2fr 1fr; gap:32px; align-items:center;
+  }
+  .rg h2{margin-bottom:14px;}
+  .rg p{color:rgba(var(--text-rgb),0.72); font-size:14.5px; max-width:52ch; margin-bottom:18px;}
+  .rg-tags{display:flex; gap:10px; flex-wrap:wrap;}
+  .rg-tag{font-family:var(--mono); font-size:12px; border:1px solid var(--line); padding:8px 14px; border-radius:20px; color:rgba(var(--text-rgb),0.75);}
+  .rg-card{background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:22px;}
+  .rg-card .rg-num{font-family:var(--display); font-weight:800; font-size:30px; color:var(--gold);}
+  .rg-card .rg-lbl{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:rgba(var(--text-rgb),0.5); margin-top:4px;}
+  .rg-divider{height:1px; background:var(--line); margin:16px 0;}
+
+  footer{border-top:1px solid var(--line); padding:56px 0 28px; background:var(--surface);}
+  .footer-top{display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr 1.1fr; gap:32px; margin-bottom:40px;}
+  .footer-brand p{font-size:13.5px; color:rgba(var(--text-rgb),0.6); margin-top:12px; max-width:30ch;}
+  .footer-social{display:flex; gap:8px; margin-top:18px;}
+  .footer-social a{
+    width:34px; height:34px; border-radius:8px; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:14px; color:rgba(var(--text-rgb),0.6);
+  }
+  .footer-social a:hover{border-color:var(--gold); color:var(--gold-dim);}
+  .footer-col h4{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:rgba(var(--text-rgb),0.45); margin-bottom:16px;}
+  .footer-col a{display:block; font-size:13.5px; color:rgba(var(--text-rgb),0.72); margin-bottom:11px;}
+  .footer-col a:hover{color:var(--gold-dim);}
+  .footer-newsletter p{font-size:13px; color:rgba(var(--text-rgb),0.6); margin-bottom:12px;}
+  .footer-newsletter-row{display:flex; gap:8px;}
+  .footer-newsletter-row input{
+    flex:1; min-width:0; padding:10px 12px; border-radius:7px; border:1px solid var(--line);
+    background:var(--bg); color:var(--text); font-size:13px; font-family:var(--body);
+  }
+  .footer-newsletter-row input:focus{border-color:var(--gold); outline:none;}
+  .footer-newsletter-row button{
+    padding:10px 16px; border-radius:7px; border:1px solid var(--gold); background:var(--gold);
+    color:var(--ink); font-size:13px; font-weight:600; white-space:nowrap;
+  }
+  .footer-divider{height:1px; background:var(--line); margin-bottom:22px;}
+  .footer-bottom{
+    font-size:12px; color:rgba(var(--text-rgb),0.4); font-family:var(--mono);
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .back-to-top{
+    display:flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:20px;
+    padding:7px 14px; font-family:var(--mono); font-size:11.5px; color:rgba(var(--text-rgb),0.6);
+    background:transparent;
+  }
+  .back-to-top:hover{border-color:var(--gold); color:var(--gold-dim);}
+
+  /* order ticket modal */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(8,15,12,0.7); backdrop-filter:blur(4px);
+    display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
+  }
+  .modal-backdrop.open{display:flex;}
+  .modal{background:var(--surface); border:1px solid var(--line); border-radius:14px; width:100%; max-width:400px; padding:30px;}
+  .modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+  .modal-head h3{font-family:var(--display); font-size:22px; font-weight:700;}
+  .modal-close{background:none; border:none; color:rgba(var(--text-rgb),0.6); font-size:20px;}
+  .modal-price-row{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--line);}
+  .modal-price-row .mp{font-family:var(--mono); font-size:22px; font-weight:700; color:var(--gold);}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12.5px; margin-bottom:6px; color:rgba(var(--text-rgb),0.65);}
+  .field input{width:100%; padding:11px 12px; border-radius:7px; border:1px solid var(--line); background:rgba(var(--text-rgb),0.04); color:var(--text); font-size:14px; font-family:var(--mono);}
+  .field input:focus{border-color:var(--gold); outline:none;}
+  .modal-note{font-size:12px; color:rgba(var(--text-rgb),0.45); margin-top:14px; text-align:center;}
+  .field.has-error input{border-color:var(--coral);}
+  .field-error{font-size:12px; color:var(--coral); margin-top:5px; display:none;}
+  .field.has-error .field-error{display:block;}
+  .modal-tabs{display:flex; gap:4px; background:var(--surface-alt); border-radius:8px; padding:4px; margin-bottom:20px;}
+  .modal-tab{flex:1; padding:9px; font-size:13px; font-weight:600; border-radius:6px; background:transparent; border:none; color:rgba(var(--text-rgb),0.55);}
+  .modal-tab.active{background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15);}
+  .modal-form{display:none;}
+  .modal-form.active{display:block;}
+  .account-chip{
+    display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px;
+    border:1px solid var(--line); background:transparent; font-size:13.5px; font-weight:600; color:var(--text);
+  }
+  .account-chip .avatar{
+    width:22px; height:22px; border-radius:50%; background:var(--gold); color:var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;
+  }
+  .account-menu{position:relative;}
+  .account-dropdown{
+    position:absolute; top:calc(100% + 8px); right:0; background:var(--surface); border:1px solid var(--line);
+    border-radius:10px; min-width:180px; padding:8px; display:none; box-shadow:0 12px 30px -8px rgba(0,0,0,0.3); z-index:60;
+  }
+  .account-dropdown.open{display:block;}
+  .account-dropdown .ad-item{
+    display:block; width:100%; text-align:left; padding:9px 10px; border-radius:6px; font-size:13px;
+    background:transparent; border:none; color:var(--text);
+  }
+  .account-dropdown .ad-item:hover{background:var(--surface-alt);}
+  .logged-out-actions{display:flex; gap:10px;}
+
+  .toast{
+    position:fixed; bottom:22px; right:22px; z-index:90;
+    background:var(--gold); color:var(--ink); border-radius:10px;
+    padding:14px 18px; font-size:13.5px; font-weight:600;
+    box-shadow:0 20px 40px -12px rgba(0,0,0,0.5); display:flex; align-items:center; gap:10px;
+    transform:translateY(140%); opacity:0; transition:all .35s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .toast.show{transform:translateY(0); opacity:1;}
+
+  @media (max-width:860px){
+    .wrap{padding:0 20px;}
+    nav.links{display:none;}
+    .hero-inner{grid-template-columns:1fr; padding-top:36px;}
+    .steps{grid-template-columns:1fr 1fr;}
+    .rg{grid-template-columns:1fr;}
+    .footer-top{grid-template-columns:1fr 1fr;}
+    .mt-head{display:none;}
+    .mt-row{grid-template-columns:1fr; gap:8px; text-align:left;}
+    .mt-actions{justify-content:flex-start;}
+  }
+  @media (prefers-reduced-motion: reduce){*{animation:none !important; transition:none !important;}}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">LIVE-PRICED INSTRUMENTS — real snapshot prices, 22 Aug 2026 · toggle live ticks for simulated movement</div>
+
+<header class="nav">
+  <div class="nav-inner wrap">
+    <div class="logo"><span>Acacia</span><span class="dot">•</span><span>Bet</span></div>
+    <nav class="links">
+      <a href="index.html">Bet</a>
+      <a href="trading.html">Trading</a>
+      <a href="trading-markets.html" class="nav-active">Markets</a>
+      <a href="trading-wallet.html">Wallet</a>
+      <a href="trading-how.html">How it works</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+      <div class="logged-out-actions" id="loggedOutActions">
+        <button class="btn" id="loginBtn">Log in</button>
+        <button class="btn btn-gold" id="signupBtn">Sign up</button>
+      </div>
+      <div class="account-menu" id="accountMenu" style="display:none;">
+        <button class="account-chip" id="accountChip">
+          <span class="avatar" id="accountAvatar">D</span>
+          <span id="accountName">Demo User</span>
+        </button>
+        <div class="account-dropdown" id="accountDropdown">
+          <button class="ad-item" id="logoutBtn">Log out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="markets">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Live-priced instruments</h2>
+      <div class="section-note">Base prices are a real snapshot, 22 Aug 2026 · toggle live ticks to see simulated movement</div>
+    </div>
+
+    <div class="live-toggle-row">
+      <label class="live-toggle">
+        <span class="lt-switch" id="liveToggle"></span>
+        <span id="liveToggleLabel">Live ticks: off</span>
+      </label>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Forex</button>
+      <button class="tab">Metals</button>
+      <button class="tab">Crypto</button>
+      <button class="tab">Indices</button>
+    </div>
+
+    <div class="market-table" id="marketTable">
+      <div class="mt-head">
+        <div>Instrument</div><div>Price</div><div>24h change</div><div>Spread</div><div>Trade</div>
+      </div>
+      <div class="mt-row" data-name="EUR/USD" data-price="1.1699">
+        <div class="mt-instr">EUR/USD<span class="sub">Euro vs US Dollar</span></div>
+        <div class="mt-val">1.1699</div>
+        <div class="mt-val mt-change up">+0.15%</div>
+        <div class="mt-val">0.8 pips</div>
+        <div class="mt-actions">
+          <button class="trade-btn buy">Buy</button>
+          <button class="trade-btn sell">Sell</button>
+        </div>
+      </div>
+      <div class="mt-row" data-name="USD/KES" data-price="129.43">
+        <div class="mt-instr">USD/KES<span class="sub">US Dollar vs Kenyan Shilling</span></div>
+        <div class="mt-val">129.43</div>
+        <div class="mt-val mt-change up">+0.05%</div>
+        <div class="mt-val">30 pips</div>
+        <div class="mt-actions">
+          <button class="trade-btn buy">Buy</button>
+          <button class="trade-btn sell">Sell</button>
+        </div>
+      </div>
+      <div class="mt-row" data-name="GBP/USD" data-price="1.3637">
+        <div class="mt-instr">GBP/USD<span class="sub">British Pound vs US Dollar</span></div>
+        <div class="mt-val">1.3637</div>
+        <div class="mt-val mt-change up">+0.14%</div>
+        <div class="mt-val">1.1 pips</div>
+        <div class="mt-actions">
+          <button class="trade-btn buy">Buy</button>
+          <button class="trade-btn sell">Sell</button>
+        </div>
+      </div>
+      <div class="mt-row" data-name="XAU/USD" data-price="4661.60">
+        <div class="mt-instr">XAU/USD<span class="sub">Gold Spot</span></div>
+        <div class="mt-val">4,661.60</div>
+        <div class="mt-val mt-change up">+1.97%</div>
+        <div class="mt-val">$0.35</div>
+        <div class="mt-actions">
+          <button class="trade-btn buy">Buy</button>
+          <button class="trade-btn sell">Sell</button>
+        </div>
+      </div>
+      <div class="mt-row" data-name="Crude Oil" data-price="86.64">
+        <div class="mt-instr">CL (Crude Oil)<span class="sub">WTI, Sep 26 contract</span></div>
+        <div class="mt-val">86.64</div>
+        <div class="mt-val mt-change down">-0.22%</div>
+        <div class="mt-val">$0.03</div>
+        <div class="mt-actions">
+          <button class="trade-btn buy">Buy</button>
+          <button class="trade-btn sell">Sell</button>
+        </div>
+      </div>
+      <div class="mt-row" data-name="BTC/USD" data-price="78473.05">
+        <div class="mt-instr">BTC/USD<span class="sub">Bitcoin</span></div>
+        <div class="mt-val">78,473.05</div>
+        <div class="mt-val mt-change up">+6.50%</div>
+        <div class="mt-val">$12.00</div>
+        <div class="mt-actions">
+          <button class="trade-btn buy">Buy</button>
+          <button class="trade-btn sell">Sell</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-panel">
+      <div class="chart-head">
+        <div>
+          <div class="chart-title">EUR/USD</div>
+          <div style="font-family:var(--mono); font-size:11.5px; color:rgba(var(--text-rgb),0.45); margin-top:4px;">Snapshot chart — illustrative path to today's price, not tick-level history</div>
+        </div>
+        <div class="chart-price">1.1699</div>
+      </div>
+      <div class="chart-svg-wrap">
+        <svg viewBox="0 0 600 180" width="100%" height="100%" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4FD1A5" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#4FD1A5" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <polyline points="0,120 40,128 80,110 120,118 160,95 200,102 240,80 280,88 320,70 360,78 400,55 440,62 480,45 520,50 560,30 600,38"
+            fill="none" stroke="#4FD1A5" stroke-width="2.5"/>
+          <polygon points="0,120 40,128 80,110 120,118 160,95 200,102 240,80 280,88 320,70 360,78 400,55 440,62 480,45 520,50 560,30 600,38 600,180 0,180"
+            fill="url(#chartGrad)"/>
+        </svg>
+      </div>
+      <div class="chart-timeframes">
+        <button class="tf-chip">1H</button>
+        <button class="tf-chip">4H</button>
+        <button class="tf-chip active">1D</button>
+        <button class="tf-chip">1W</button>
+        <button class="tf-chip">1M</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo"><span>Acacia</span><span class="dot">•</span><span>Bet</span></div>
+        <p>A visual demo of a sports-betting and trading product experience. No real accounts, deposits, wagers, or trades happen on this page.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="X / Twitter">𝕏</a>
+          <a href="#" aria-label="Instagram">◎</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="index.html">Bet home</a>
+        <a href="markets.html">Sports markets</a>
+        <a href="games.html">Games</a>
+        <a href="trading-markets.html">Trading markets</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="trading-how.html#responsible">Trade safe</a>
+        <a href="how.html#responsible">Play safe</a>
+        <a href="#">Contact us</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Terms of use</a>
+        <a href="#">Privacy policy</a>
+        <a href="#">Licensing status</a>
+      </div>
+      <div class="footer-col footer-newsletter">
+        <h4>Stay updated</h4>
+        <p>Market notes and product news, no spam. Demo form — doesn't send anywhere.</p>
+        <div class="footer-newsletter-row">
+          <input type="text" placeholder="you@example.com" id="footerEmail">
+          <button id="footerSubscribe">Join</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <span>© 2026 Acacia Bet — demo prototype, not a licensed operator</span>
+      <span>Leveraged trading carries a high risk of loss. 18+</span>
+      <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to top</button>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="orderModalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="orderModalTitle">Buy EUR/USD</h3>
+      <button class="modal-close" id="orderModalClose">&times;</button>
+    </div>
+    <div class="modal-price-row">
+      <span style="font-size:13px; color:rgba(var(--text-rgb),0.6);">Reference price</span>
+      <span class="mp" id="modalPrice">1.1699</span>
+    </div>
+    <div class="field">
+      <label>Position size (units)</label>
+      <input type="text" value="1000" id="orderSize">
+    </div>
+    <div class="field">
+      <label>Stop loss (optional)</label>
+      <input type="text" placeholder="e.g. 1.1600">
+    </div>
+    <button class="btn btn-gold btn-lg" style="width:100%; margin-top:6px;" id="orderModalSubmit">Review order</button>
+    <p class="modal-note">This is a cosmetic demo ticket — no order is sent and no real position is opened.</p>
+  </div>
+</div>
+
+
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Welcome back</h3>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-form="loginForm">Log in</button>
+      <button class="modal-tab" data-form="signupForm">Sign up</button>
+    </div>
+
+    <form class="modal-form active" id="loginForm" novalidate>
+      <div class="field" id="loginEmailField">
+        <label>Email</label>
+        <input type="text" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+        <div class="field-error">Enter a valid email address.</div>
+      </div>
+      <div class="field" id="loginPasswordField">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+        <div class="field-error">Password must be at least 6 characters.</div>
+      </div>
+      <button type="submit" class="btn btn-gold btn-lg" style="width:100%; margin-top:6px;">Log in</button>
+      <p class="modal-note">This is a cosmetic demo form — no account is created and no data is sent anywhere.</p>
+    </form>
+
+    <form class="modal-form" id="signupForm" novalidate>
+      <div class="field" id="signupNameField">
+        <label>Full name</label>
+        <input type="text" id="signupName" placeholder="Jane Wanjiru" autocomplete="name">
+        <div class="field-error">Enter your name.</div>
+      </div>
+      <div class="field" id="signupEmailField">
+        <label>Email</label>
+        <input type="text" id="signupEmail" placeholder="you@example.com" autocomplete="email">
+        <div class="field-error">Enter a valid email address.</div>
+      </div>
+      <div class="field" id="signupPasswordField">
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="••••••••" autocomplete="new-password">
+        <div class="field-error">Password must be at least 6 characters.</div>
+      </div>
+      <div class="field" id="signupConfirmField">
+        <label>Confirm password</label>
+        <input type="password" id="signupConfirm" placeholder="••••••••" autocomplete="new-password">
+        <div class="field-error">Passwords don't match.</div>
+      </div>
+      <button type="submit" class="btn btn-gold btn-lg" style="width:100%; margin-top:6px;">Create demo account</button>
+      <p class="modal-note">This is a cosmetic demo form — no account is created and no data is sent anywhere.</p>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast">Order preview only — demo</div>
+
+<script>
+  // ===== Order ticket modal (Buy/Sell) — cosmetic only =====
+  const orderBackdrop = document.getElementById('orderModalBackdrop');
+  const orderModalTitle = document.getElementById('orderModalTitle');
+  const modalPrice = document.getElementById('modalPrice');
+  const openOrderModal = (title, price) => {
+    orderModalTitle.textContent = title;
+    if(price) modalPrice.textContent = price;
+    orderBackdrop.classList.add('open');
+  };
+  document.getElementById('orderModalClose').addEventListener('click', () => orderBackdrop.classList.remove('open'));
+  orderBackdrop.addEventListener('click', (e) => { if (e.target === orderBackdrop) orderBackdrop.classList.remove('open'); });
+  let pendingOrder = null;
+  document.getElementById('orderModalSubmit').addEventListener('click', () => {
+    orderBackdrop.classList.remove('open');
+    if(pendingOrder){
+      addOrder(pendingOrder);
+      pendingOrder = null;
+    }
+    showToast('This is a demo — no order was placed');
+  });
+
+  document.querySelectorAll('.trade-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('.mt-row');
+      const name = row.dataset.name;
+      const price = row.dataset.price;
+      const side = btn.classList.contains('buy') ? 'Buy' : 'Sell';
+      pendingOrder = { name, price, side };
+      openOrderModal(side + ' ' + name, price);
+    });
+  });
+
+  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
+  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
+  const backdrop = document.getElementById('modalBackdrop');
+  const modalTitle = document.getElementById('modalTitle');
+
+  function switchModalTab(formId){
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.form === formId));
+    document.querySelectorAll('.modal-form').forEach(f => f.classList.toggle('active', f.id === formId));
+    modalTitle.textContent = formId === 'signupForm' ? 'Create demo account' : 'Welcome back';
+  }
+  document.querySelectorAll('.modal-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchModalTab(tab.dataset.form));
+  });
+
+  const openModal = (formId) => { switchModalTab(formId || 'loginForm'); backdrop.classList.add('open'); };
+  document.getElementById('loginBtn').addEventListener('click', () => openModal('loginForm'));
+  document.getElementById('signupBtn').addEventListener('click', () => openModal('signupForm'));
+  document.getElementById('heroSignup')?.addEventListener('click', () => openModal('signupForm'));
+  document.getElementById('modalClose').addEventListener('click', () => backdrop.classList.remove('open'));
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) backdrop.classList.remove('open'); });
+
+  function setError(fieldId, show){
+    document.getElementById(fieldId).classList.toggle('has-error', show);
+  }
+  const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const emailOk = isValidEmail(email);
+    const passOk = password.length >= 6;
+    setError('loginEmailField', !emailOk);
+    setError('loginPasswordField', !passOk);
+    if(!emailOk || !passOk) return;
+    startFakeSession(email.split('@')[0]);
+  });
+
+  document.getElementById('signupForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirm = document.getElementById('signupConfirm').value;
+    const nameOk = name.length > 0;
+    const emailOk = isValidEmail(email);
+    const passOk = password.length >= 6;
+    const confirmOk = passOk && password === confirm;
+    setError('signupNameField', !nameOk);
+    setError('signupEmailField', !emailOk);
+    setError('signupPasswordField', !passOk);
+    setError('signupConfirmField', !confirmOk);
+    if(!nameOk || !emailOk || !passOk || !confirmOk) return;
+    startFakeSession(name);
+  });
+
+  function startFakeSession(name){
+    sessionStorage.setItem('saccaia-demo-user', name);
+    backdrop.classList.remove('open');
+    applySessionUI(name);
+    showToast('Signed in as ' + name + ' — demo session only, nothing was sent to a server');
+  }
+
+  function applySessionUI(name){
+    document.getElementById('loggedOutActions').style.display = 'none';
+    document.getElementById('accountMenu').style.display = 'block';
+    document.getElementById('accountName').textContent = name;
+    document.getElementById('accountAvatar').textContent = name.charAt(0).toUpperCase();
+  }
+
+  function clearSessionUI(){
+    document.getElementById('loggedOutActions').style.display = 'flex';
+    document.getElementById('accountMenu').style.display = 'none';
+    document.getElementById('accountDropdown').classList.remove('open');
+  }
+
+  document.getElementById('accountChip').addEventListener('click', () => {
+    document.getElementById('accountDropdown').classList.toggle('open');
+  });
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    sessionStorage.removeItem('saccaia-demo-user');
+    clearSessionUI();
+    showToast('Logged out (demo session ended)');
+  });
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('accountMenu');
+    if(menu.style.display !== 'none' && !menu.contains(e.target)){
+      document.getElementById('accountDropdown').classList.remove('open');
+    }
+  });
+
+  const existingUser = sessionStorage.getItem('saccaia-demo-user');
+  if(existingUser) applySessionUI(existingUser);
+
+  function addOrder(order){
+    const pane = document.getElementById('ordersPane');
+    if(!pane){
+      showToast(order.side + ' ' + order.name + ' saved — view it on the Wallet page (demo)');
+      return;
+    }
+    const emptyMsg = document.getElementById('ordersEmptyMsg');
+    if(emptyMsg) emptyMsg.remove();
+    let list = pane.querySelector('.order-list');
+    if(!list){
+      list = document.createElement('div');
+      list.className = 'order-list';
+      pane.appendChild(list);
+    }
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px;';
+    row.innerHTML = `<span>${order.side} ${order.name}</span><span style="font-family:var(--mono); font-weight:600; color:var(--gold-dim);">${order.price}</span>`;
+    list.appendChild(row);
+  }
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.tf-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.tf-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+
+  // Wallet <-> Open Orders switcher
+  document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
+    tabBtn.addEventListener('click', () => {
+      document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.wallet-pane').forEach(p => p.classList.remove('active'));
+      tabBtn.classList.add('active');
+      document.getElementById(tabBtn.dataset.pane).classList.add('active');
+    });
+  });
+  document.getElementById('depositBtn')?.addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
+  document.getElementById('withdrawBtn')?.addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
+
+  // ===== Live tick simulation — nudges the real snapshot prices client-side. =====
+  // Not a real market data stream: a genuine live feed needs a paid provider + backend.
+  (function(){
+    const toggle = document.getElementById('liveToggle');
+    const toggleLabel = document.getElementById('liveToggleLabel');
+    if(!toggle) return;
+    let live = false;
+    let tickTimer = null;
+
+    function tick(){
+      document.querySelectorAll('.mt-row').forEach(row => {
+        const base = parseFloat(row.dataset.price);
+        const wiggle = base * (Math.random() - 0.5) * 0.0015; // small simulated move
+        const newPrice = base + wiggle;
+        row.dataset.price = newPrice.toFixed(newPrice < 10 ? 4 : 2);
+
+        const priceEl = row.querySelector('.mt-val');
+        const changeEl = row.querySelector('.mt-change');
+        if(priceEl) priceEl.textContent = Number(newPrice).toLocaleString(undefined, {minimumFractionDigits: newPrice < 10 ? 4 : 2, maximumFractionDigits: newPrice < 10 ? 4 : 2});
+
+        if(changeEl){
+          const pct = (wiggle / base * 100);
+          const up = pct >= 0;
+          changeEl.textContent = (up ? '+' : '') + pct.toFixed(2) + '%';
+          changeEl.classList.toggle('up', up);
+          changeEl.classList.toggle('down', !up);
+          row.classList.remove('flash-up', 'flash-down');
+          void row.offsetWidth;
+          row.classList.add(up ? 'flash-up' : 'flash-down');
+        }
+      });
+    }
+
+    toggle.addEventListener('click', () => {
+      live = !live;
+      toggle.classList.toggle('on', live);
+      toggleLabel.textContent = 'Live ticks: ' + (live ? 'on (simulated)' : 'off');
+      if(live){
+        tickTimer = setInterval(tick, 2000);
+      } else {
+        clearInterval(tickTimer);
+      }
+    });
+  })();
+
+  // Dark mode toggle
+  const themeToggle = document.getElementById('themeToggle');
+  function applyTheme(theme){
+    if(theme === 'dark'){
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeToggle.textContent = '☀️';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      themeToggle.textContent = '🌙';
+    }
+  }
+  const savedTheme = localStorage.getItem('saccaia-theme') || 'light';
+  applyTheme(savedTheme);
+  themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem('saccaia-theme', next);
+  });
+
+  let toastTimer;
+  // Footer newsletter — cosmetic only
+  document.getElementById('footerSubscribe')?.addEventListener('click', () => {
+    const val = document.getElementById('footerEmail').value.trim();
+    if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
+      document.getElementById('footerEmail').value = '';
+      showToast('Demo only — no email was sent or stored');
+    } else {
+      showToast('Enter a valid email to try the demo signup');
+    }
+  });
+
+  function showToast(msg){
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+</script>
+
+</body>
+</html>
