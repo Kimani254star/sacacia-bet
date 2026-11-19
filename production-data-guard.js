@@ -1,6 +1,3 @@
-/* Production data guard: hide all bundled prototype fixtures, simulated markets,
-   demo wallet balances and local game simulations. Real data must come from a
-   configured, authenticated server-side provider; there is no fake fallback. */
 (function () {
   const empty = (message) => {
     const box = document.createElement('div');

@@ -1,6 +1,3 @@
-/* Acacia Bet — Flashscore-sourced feed client.
-   The browser calls our own Supabase Edge Function only. Provider credentials must
-   remain server-side. No scraping of Flashscore pages is performed here. */
 (function () {
   'use strict';
   const root = window.ACACIA_BET_CONFIG || {};
@@ -65,6 +62,5 @@
   window.AcaciaFlashscoreFeed = { refresh };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', refresh, { once: true });
   else refresh();
-  // Poll the server-side feed; its provider refresh schedule remains server-controlled.
   window.setInterval(refresh, 5 * 60 * 1000);
 })();

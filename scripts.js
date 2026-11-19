@@ -1,9 +1,6 @@
-/* JavaScript for page-games */
 (function(){
   if (!document.body.classList.contains('page-games')) return;
 
-  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
-  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
   const backdrop = document.getElementById('modalBackdrop');
   const modalTitle = document.getElementById('modalTitle');
 
@@ -28,8 +25,6 @@
   }
   const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
-  // Authentication is handled by supabase-auth.js; no fake browser-only sessions.
-
   function applySessionUI(name){
     document.getElementById('loggedOutActions').style.display = 'none';
     document.getElementById('accountMenu').style.display = 'block';
@@ -46,7 +41,6 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -54,10 +48,6 @@
     }
   });
 
-  // Restore session on reload within the same tab
-  // Do not restore demo-only sessions; Supabase restores the authenticated session.
-
-  // Odds selection — cosmetic only, toggles style, updates bet slip pane, shows toast
   function renderSlip(){
     const selected = document.querySelectorAll('.odd-btn.selected');
     const pane = document.getElementById('slipPane');
@@ -94,7 +84,6 @@
     });
   });
 
-  // Sport tabs — cosmetic only
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -102,7 +91,6 @@
     });
   });
 
-  // Wallet <-> Bet Slip switcher
   document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
@@ -114,7 +102,6 @@
   document.getElementById('depositBtn')?.addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
   document.getElementById('withdrawBtn')?.addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
 
-  // ===== Spin & Win — cosmetic wheel, no real prizes =====
   (function(){
     const prizes = [
       { label: '2x Odds', color: '#F2A93B' },
@@ -172,7 +159,6 @@
 
       const winIndex = Math.floor(Math.random() * prizes.length);
       const targetMid = winIndex * seg + seg / 2;
-      // wheel spins clockwise; pointer is fixed at top (0deg)
       const extraSpins = 5 * 360;
       const rotation = currentRotation + extraSpins + (360 - targetMid);
       currentRotation = rotation;
@@ -186,7 +172,6 @@
     });
   })();
 
-  // Live badge — flips to LIVE based on the real fixture kickoff time
   (function(){
     const card = document.getElementById('liveCard');
     if(!card) return;
@@ -207,7 +192,6 @@
     setInterval(updateLiveState, 30000);
   })();
 
-  // Dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(theme){
     if(theme === 'dark'){
@@ -227,9 +211,7 @@
     localStorage.setItem('saccaia-theme', next);
   });
 
-  // Toast
   let toastTimer;
-  // Footer newsletter — cosmetic only
   document.getElementById('footerSubscribe')?.addEventListener('click', () => {
     const val = document.getElementById('footerEmail').value.trim();
     if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
@@ -242,13 +224,13 @@
 
   function showToast(msg){
     const toast = document.getElementById('slipToast');
+    if(!toast) return;
     toast.textContent = msg;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
   }
 
-  // ===== Aviator — local, cosmetic simulation only. No real money, no server, no real RNG-backed outcome. =====
   (function(){
     const multVal = document.getElementById('multVal');
     const multStatus = document.getElementById('multStatus');
@@ -268,7 +250,6 @@
     let bet1Placed = false, bet2Placed = false;
     let rafId;
 
-    // seed some history pills
     const seedHistory = [1.24, 2.87, 1.05, 6.42, 1.98, 1.11, 3.30, 1.67, 12.05, 1.02];
     seedHistory.forEach(v => addHistoryPill(v));
 
@@ -281,7 +262,6 @@
     }
 
     function randomCrashPoint(){
-      // simple demo-only distribution, skewed toward lower multipliers
       const r = Math.random();
       const val = 0.98 / (1 - r * 0.97);
       return Math.max(1.00, Math.min(val, 40));
@@ -299,7 +279,7 @@
     function startWaiting(){
       phase = 'waiting';
       bet1Placed = false; bet2Placed = false;
-      betBtn1.textContent = ''; 
+      betBtn1.textContent = '';
       betBtn1.innerHTML = 'Place bet<span class="sub">Stake locks in when round starts</span>';
       allBetBtn.innerHTML = 'All Bet — max stake<span class="sub">Uses your full demo balance</span>';
       betBtn1.classList.remove('placed');
@@ -339,7 +319,6 @@
 
         multVal.textContent = multiplier.toFixed(2) + 'x';
 
-        // draw curve — simple ease-out path across the stage
         const progress = Math.min(t / 6, 1); // visual progress cap
         const w = 600, h = 280;
         const x = progress * w;
@@ -349,7 +328,6 @@
         plane.style.left = Math.min((x/w)*100, 92) + '%';
         plane.style.bottom = Math.min(((h-y)/h)*82, 78) + '%';
 
-        // auto cash-out check (cosmetic)
         checkAutoCashout('auto1', bet1Placed, betBtn1, (v)=>bet1Placed=v);
         checkAutoCashout('auto2', bet2Placed, allBetBtn, (v)=>bet2Placed=v);
 
@@ -389,7 +367,6 @@
       setTimeout(startWaiting, 2200);
     }
 
-    // stake chips
     document.querySelectorAll('.stake-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         const target = document.getElementById(chip.dataset.target);
@@ -402,7 +379,6 @@
       });
     });
 
-    // place bet buttons — cosmetic
     betBtn1.addEventListener('click', () => {
       if(phase !== 'waiting'){ showToast('Wait for the next round to place a bet'); return; }
       bet1Placed = !bet1Placed;
@@ -429,12 +405,9 @@
 
 })();
 
-/* JavaScript for page-how */
 (function(){
   if (!document.body.classList.contains('page-how')) return;
 
-  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
-  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
   const backdrop = document.getElementById('modalBackdrop');
   const modalTitle = document.getElementById('modalTitle');
 
@@ -512,7 +485,6 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -520,10 +492,6 @@
     }
   });
 
-  // Restore session on reload within the same tab
-  // Do not restore demo-only sessions; Supabase restores the authenticated session.
-
-  // Odds selection — cosmetic only, toggles style, updates bet slip pane, shows toast
   function renderSlip(){
     const selected = document.querySelectorAll('.odd-btn.selected');
     const pane = document.getElementById('slipPane');
@@ -560,7 +528,6 @@
     });
   });
 
-  // Sport tabs — cosmetic only
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -568,7 +535,6 @@
     });
   });
 
-  // Wallet <-> Bet Slip switcher
   document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
@@ -580,7 +546,6 @@
   document.getElementById('depositBtn')?.addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
   document.getElementById('withdrawBtn')?.addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
 
-  // ===== Spin & Win — cosmetic wheel, no real prizes =====
   (function(){
     const prizes = [
       { label: '2x Odds', color: '#F2A93B' },
@@ -638,7 +603,6 @@
 
       const winIndex = Math.floor(Math.random() * prizes.length);
       const targetMid = winIndex * seg + seg / 2;
-      // wheel spins clockwise; pointer is fixed at top (0deg)
       const extraSpins = 5 * 360;
       const rotation = currentRotation + extraSpins + (360 - targetMid);
       currentRotation = rotation;
@@ -652,7 +616,6 @@
     });
   })();
 
-  // Live badge — flips to LIVE based on the real fixture kickoff time
   (function(){
     const card = document.getElementById('liveCard');
     if(!card) return;
@@ -673,7 +636,6 @@
     setInterval(updateLiveState, 30000);
   })();
 
-  // Dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(theme){
     if(theme === 'dark'){
@@ -693,9 +655,7 @@
     localStorage.setItem('saccaia-theme', next);
   });
 
-  // Toast
   let toastTimer;
-  // Footer newsletter — cosmetic only
   document.getElementById('footerSubscribe')?.addEventListener('click', () => {
     const val = document.getElementById('footerEmail').value.trim();
     if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
@@ -708,13 +668,13 @@
 
   function showToast(msg){
     const toast = document.getElementById('slipToast');
+    if(!toast) return;
     toast.textContent = msg;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
   }
 
-  // ===== Aviator — local, cosmetic simulation only. No real money, no server, no real RNG-backed outcome. =====
   (function(){
     const multVal = document.getElementById('multVal');
     const multStatus = document.getElementById('multStatus');
@@ -734,7 +694,6 @@
     let bet1Placed = false, bet2Placed = false;
     let rafId;
 
-    // seed some history pills
     const seedHistory = [1.24, 2.87, 1.05, 6.42, 1.98, 1.11, 3.30, 1.67, 12.05, 1.02];
     seedHistory.forEach(v => addHistoryPill(v));
 
@@ -747,7 +706,6 @@
     }
 
     function randomCrashPoint(){
-      // simple demo-only distribution, skewed toward lower multipliers
       const r = Math.random();
       const val = 0.98 / (1 - r * 0.97);
       return Math.max(1.00, Math.min(val, 40));
@@ -765,7 +723,7 @@
     function startWaiting(){
       phase = 'waiting';
       bet1Placed = false; bet2Placed = false;
-      betBtn1.textContent = ''; 
+      betBtn1.textContent = '';
       betBtn1.innerHTML = 'Place bet<span class="sub">Stake locks in when round starts</span>';
       allBetBtn.innerHTML = 'All Bet — max stake<span class="sub">Uses your full demo balance</span>';
       betBtn1.classList.remove('placed');
@@ -805,7 +763,6 @@
 
         multVal.textContent = multiplier.toFixed(2) + 'x';
 
-        // draw curve — simple ease-out path across the stage
         const progress = Math.min(t / 6, 1); // visual progress cap
         const w = 600, h = 280;
         const x = progress * w;
@@ -815,7 +772,6 @@
         plane.style.left = Math.min((x/w)*100, 92) + '%';
         plane.style.bottom = Math.min(((h-y)/h)*82, 78) + '%';
 
-        // auto cash-out check (cosmetic)
         checkAutoCashout('auto1', bet1Placed, betBtn1, (v)=>bet1Placed=v);
         checkAutoCashout('auto2', bet2Placed, allBetBtn, (v)=>bet2Placed=v);
 
@@ -855,7 +811,6 @@
       setTimeout(startWaiting, 2200);
     }
 
-    // stake chips
     document.querySelectorAll('.stake-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         const target = document.getElementById(chip.dataset.target);
@@ -868,7 +823,6 @@
       });
     });
 
-    // place bet buttons — cosmetic
     betBtn1.addEventListener('click', () => {
       if(phase !== 'waiting'){ showToast('Wait for the next round to place a bet'); return; }
       bet1Placed = !bet1Placed;
@@ -895,12 +849,9 @@
 
 })();
 
-/* JavaScript for page-markets */
 (function(){
   if (!document.body.classList.contains('page-markets')) return;
 
-  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
-  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
   const backdrop = document.getElementById('modalBackdrop');
   const modalTitle = document.getElementById('modalTitle');
 
@@ -978,7 +929,6 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -986,10 +936,6 @@
     }
   });
 
-  // Restore session on reload within the same tab
-  // Do not restore demo-only sessions; Supabase restores the authenticated session.
-
-  // Odds selection — cosmetic only, toggles style, updates bet slip pane, shows toast
   function renderSlip(){
     const selected = document.querySelectorAll('.odd-btn.selected');
     const pane = document.getElementById('slipPane');
@@ -1026,7 +972,6 @@
     });
   });
 
-  // Sport tabs — cosmetic only
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1034,7 +979,6 @@
     });
   });
 
-  // Wallet <-> Bet Slip switcher
   document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
@@ -1046,7 +990,6 @@
   document.getElementById('depositBtn')?.addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
   document.getElementById('withdrawBtn')?.addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
 
-  // ===== Spin & Win — cosmetic wheel, no real prizes =====
   (function(){
     const prizes = [
       { label: '2x Odds', color: '#F2A93B' },
@@ -1104,7 +1047,6 @@
 
       const winIndex = Math.floor(Math.random() * prizes.length);
       const targetMid = winIndex * seg + seg / 2;
-      // wheel spins clockwise; pointer is fixed at top (0deg)
       const extraSpins = 5 * 360;
       const rotation = currentRotation + extraSpins + (360 - targetMid);
       currentRotation = rotation;
@@ -1118,7 +1060,6 @@
     });
   })();
 
-  // Live badge — flips to LIVE based on the real fixture kickoff time
   (function(){
     const card = document.getElementById('liveCard');
     if(!card) return;
@@ -1139,7 +1080,6 @@
     setInterval(updateLiveState, 30000);
   })();
 
-  // Dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(theme){
     if(theme === 'dark'){
@@ -1159,9 +1099,7 @@
     localStorage.setItem('saccaia-theme', next);
   });
 
-  // Toast
   let toastTimer;
-  // Footer newsletter — cosmetic only
   document.getElementById('footerSubscribe')?.addEventListener('click', () => {
     const val = document.getElementById('footerEmail').value.trim();
     if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
@@ -1174,13 +1112,13 @@
 
   function showToast(msg){
     const toast = document.getElementById('slipToast');
+    if(!toast) return;
     toast.textContent = msg;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
   }
 
-  // ===== Aviator — local, cosmetic simulation only. No real money, no server, no real RNG-backed outcome. =====
   (function(){
     const multVal = document.getElementById('multVal');
     const multStatus = document.getElementById('multStatus');
@@ -1200,7 +1138,6 @@
     let bet1Placed = false, bet2Placed = false;
     let rafId;
 
-    // seed some history pills
     const seedHistory = [1.24, 2.87, 1.05, 6.42, 1.98, 1.11, 3.30, 1.67, 12.05, 1.02];
     seedHistory.forEach(v => addHistoryPill(v));
 
@@ -1213,7 +1150,6 @@
     }
 
     function randomCrashPoint(){
-      // simple demo-only distribution, skewed toward lower multipliers
       const r = Math.random();
       const val = 0.98 / (1 - r * 0.97);
       return Math.max(1.00, Math.min(val, 40));
@@ -1231,7 +1167,7 @@
     function startWaiting(){
       phase = 'waiting';
       bet1Placed = false; bet2Placed = false;
-      betBtn1.textContent = ''; 
+      betBtn1.textContent = '';
       betBtn1.innerHTML = 'Place bet<span class="sub">Stake locks in when round starts</span>';
       allBetBtn.innerHTML = 'All Bet — max stake<span class="sub">Uses your full demo balance</span>';
       betBtn1.classList.remove('placed');
@@ -1271,7 +1207,6 @@
 
         multVal.textContent = multiplier.toFixed(2) + 'x';
 
-        // draw curve — simple ease-out path across the stage
         const progress = Math.min(t / 6, 1); // visual progress cap
         const w = 600, h = 280;
         const x = progress * w;
@@ -1281,7 +1216,6 @@
         plane.style.left = Math.min((x/w)*100, 92) + '%';
         plane.style.bottom = Math.min(((h-y)/h)*82, 78) + '%';
 
-        // auto cash-out check (cosmetic)
         checkAutoCashout('auto1', bet1Placed, betBtn1, (v)=>bet1Placed=v);
         checkAutoCashout('auto2', bet2Placed, allBetBtn, (v)=>bet2Placed=v);
 
@@ -1321,7 +1255,6 @@
       setTimeout(startWaiting, 2200);
     }
 
-    // stake chips
     document.querySelectorAll('.stake-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         const target = document.getElementById(chip.dataset.target);
@@ -1334,7 +1267,6 @@
       });
     });
 
-    // place bet buttons — cosmetic
     betBtn1.addEventListener('click', () => {
       if(phase !== 'waiting'){ showToast('Wait for the next round to place a bet'); return; }
       bet1Placed = !bet1Placed;
@@ -1361,12 +1293,9 @@
 
 })();
 
-/* JavaScript for page-wallet */
 (function(){
   if (!document.body.classList.contains('page-wallet')) return;
 
-  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
-  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
   const backdrop = document.getElementById('modalBackdrop');
   const modalTitle = document.getElementById('modalTitle');
 
@@ -1444,7 +1373,6 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -1452,10 +1380,6 @@
     }
   });
 
-  // Restore session on reload within the same tab
-  // Do not restore demo-only sessions; Supabase restores the authenticated session.
-
-  // Odds selection — cosmetic only, toggles style, updates bet slip pane, shows toast
   function renderSlip(){
     const selected = document.querySelectorAll('.odd-btn.selected');
     const pane = document.getElementById('slipPane');
@@ -1492,7 +1416,6 @@
     });
   });
 
-  // Sport tabs — cosmetic only
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1500,7 +1423,6 @@
     });
   });
 
-  // Wallet <-> Bet Slip switcher
   document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
@@ -1512,7 +1434,6 @@
   document.getElementById('depositBtn')?.addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
   document.getElementById('withdrawBtn')?.addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
 
-  // ===== Spin & Win — cosmetic wheel, no real prizes =====
   (function(){
     const prizes = [
       { label: '2x Odds', color: '#F2A93B' },
@@ -1570,7 +1491,6 @@
 
       const winIndex = Math.floor(Math.random() * prizes.length);
       const targetMid = winIndex * seg + seg / 2;
-      // wheel spins clockwise; pointer is fixed at top (0deg)
       const extraSpins = 5 * 360;
       const rotation = currentRotation + extraSpins + (360 - targetMid);
       currentRotation = rotation;
@@ -1584,7 +1504,6 @@
     });
   })();
 
-  // Live badge — flips to LIVE based on the real fixture kickoff time
   (function(){
     const card = document.getElementById('liveCard');
     if(!card) return;
@@ -1605,7 +1524,6 @@
     setInterval(updateLiveState, 30000);
   })();
 
-  // Dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(theme){
     if(theme === 'dark'){
@@ -1625,9 +1543,7 @@
     localStorage.setItem('saccaia-theme', next);
   });
 
-  // Toast
   let toastTimer;
-  // Footer newsletter — cosmetic only
   document.getElementById('footerSubscribe')?.addEventListener('click', () => {
     const val = document.getElementById('footerEmail').value.trim();
     if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
@@ -1640,13 +1556,13 @@
 
   function showToast(msg){
     const toast = document.getElementById('slipToast');
+    if(!toast) return;
     toast.textContent = msg;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
   }
 
-  // ===== Aviator — local, cosmetic simulation only. No real money, no server, no real RNG-backed outcome. =====
   (function(){
     const multVal = document.getElementById('multVal');
     const multStatus = document.getElementById('multStatus');
@@ -1666,7 +1582,6 @@
     let bet1Placed = false, bet2Placed = false;
     let rafId;
 
-    // seed some history pills
     const seedHistory = [1.24, 2.87, 1.05, 6.42, 1.98, 1.11, 3.30, 1.67, 12.05, 1.02];
     seedHistory.forEach(v => addHistoryPill(v));
 
@@ -1679,7 +1594,6 @@
     }
 
     function randomCrashPoint(){
-      // simple demo-only distribution, skewed toward lower multipliers
       const r = Math.random();
       const val = 0.98 / (1 - r * 0.97);
       return Math.max(1.00, Math.min(val, 40));
@@ -1697,7 +1611,7 @@
     function startWaiting(){
       phase = 'waiting';
       bet1Placed = false; bet2Placed = false;
-      betBtn1.textContent = ''; 
+      betBtn1.textContent = '';
       betBtn1.innerHTML = 'Place bet<span class="sub">Stake locks in when round starts</span>';
       allBetBtn.innerHTML = 'All Bet — max stake<span class="sub">Uses your full demo balance</span>';
       betBtn1.classList.remove('placed');
@@ -1737,7 +1651,6 @@
 
         multVal.textContent = multiplier.toFixed(2) + 'x';
 
-        // draw curve — simple ease-out path across the stage
         const progress = Math.min(t / 6, 1); // visual progress cap
         const w = 600, h = 280;
         const x = progress * w;
@@ -1747,7 +1660,6 @@
         plane.style.left = Math.min((x/w)*100, 92) + '%';
         plane.style.bottom = Math.min(((h-y)/h)*82, 78) + '%';
 
-        // auto cash-out check (cosmetic)
         checkAutoCashout('auto1', bet1Placed, betBtn1, (v)=>bet1Placed=v);
         checkAutoCashout('auto2', bet2Placed, allBetBtn, (v)=>bet2Placed=v);
 
@@ -1787,7 +1699,6 @@
       setTimeout(startWaiting, 2200);
     }
 
-    // stake chips
     document.querySelectorAll('.stake-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         const target = document.getElementById(chip.dataset.target);
@@ -1800,7 +1711,6 @@
       });
     });
 
-    // place bet buttons — cosmetic
     betBtn1.addEventListener('click', () => {
       if(phase !== 'waiting'){ showToast('Wait for the next round to place a bet'); return; }
       bet1Placed = !bet1Placed;
@@ -1827,11 +1737,9 @@
 
 })();
 
-/* JavaScript for page-index */
 (function(){
   if (!document.body.classList.contains('page-index')) return;
 
-  // ============ State ============
   let balance = 5000;
   const selections = new Map();
 
@@ -1840,13 +1748,15 @@
 
   function showToast(msg){
     const t = document.getElementById('toast');
+    if(!t) return;
     t.textContent = msg;
+    t.classList.remove('show');
+    void t.offsetWidth;
     t.classList.add('show');
     clearTimeout(showToast._timer);
-    showToast._timer = setTimeout(() => t.classList.remove('show'), 2600);
+    showToast._timer = setTimeout(() => t.classList.remove('show'), 3600);
   }
 
-  // ============ Theme toggle ============
   const themeToggle = document.getElementById('theme-toggle');
   const iconMoon = document.getElementById('theme-icon-moon');
   const iconSun = document.getElementById('theme-icon-sun');
@@ -1857,7 +1767,6 @@
     themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
   });
 
-  // ============ Promotions carousel ============
   const promoTrack = document.getElementById('promo-track');
   const promoDots = document.querySelectorAll('#promo-dots span');
   let promoIndex = 0;
@@ -1870,7 +1779,6 @@
   promoDots.forEach(dot => dot.addEventListener('click', () => goToPromo(parseInt(dot.getAttribute('data-i')))));
   setInterval(() => { goToPromo((promoIndex + 1) % promoDots.length); }, 6000);
 
-  // ============ Market toggle (+ more markets) ============
   document.querySelectorAll('.market-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
       const panel = btn.nextElementSibling;
@@ -1880,13 +1788,11 @@
     });
   });
 
-  // ============ Fixture search ============
   const fixtureSearch = document.getElementById('fixture-search');
   if (fixtureSearch){
     fixtureSearch.addEventListener('input', applyFixtureFilters);
   }
 
-  // ============ Quick stake buttons ============
   document.querySelectorAll('.quick-stakes button').forEach(btn => {
     btn.addEventListener('click', () => {
       const panel = btn.closest('.slip-footer');
@@ -1901,7 +1807,6 @@
     });
   });
 
-  // ============ My Bets ============
   let placedBets = [];
   let betIdCounter = 1;
 
@@ -1950,7 +1855,6 @@
   document.getElementById('mybets-close').addEventListener('click', () => mybetsOverlay.classList.remove('open'));
   mybetsOverlay.addEventListener('click', (e) => { if (e.target === mybetsOverlay) mybetsOverlay.classList.remove('open'); });
 
-  // ============ Responsible gambling modal ============
   const rgOverlay = document.getElementById('rg-overlay');
   document.getElementById('menu-rg').addEventListener('click', (e) => {
     e.preventDefault();
@@ -1971,7 +1875,6 @@
     showToast('You are self-excluded for 24 hours.');
   });
 
-  // ============ Deposit modal ============
   const depositOverlay = document.getElementById('deposit-overlay');
   const depositFormWrap = document.getElementById('deposit-form-wrap');
   const depositProcessing = document.getElementById('deposit-processing');
@@ -2066,7 +1969,6 @@
     showToast('M-Pesa payment cancelled.');
   });
 
-  // ============ Withdraw modal ============
   const withdrawOverlay = document.getElementById('withdraw-overlay');
   const withdrawFormWrap = document.getElementById('withdraw-form-wrap');
   const withdrawProcessing = document.getElementById('withdraw-processing');
@@ -2114,7 +2016,6 @@
     }, 1500);
   });
 
-  // ============ Sport tabs ============
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -2128,7 +2029,6 @@
     });
   });
 
-  // ============ League filter + search (combined) ============
   let activeLeague = 'all';
   function applyFixtureFilters(){
     const q = (fixtureSearch ? fixtureSearch.value : '').trim().toLowerCase();
@@ -2149,7 +2049,6 @@
     });
   });
 
-  // ============ Auth modal ============
   const overlay = document.getElementById('auth-overlay');
   const modalTitle = document.getElementById('modal-title');
   const loginForm = document.getElementById('login-form');
@@ -2191,7 +2090,6 @@
   loginForm.addEventListener('submit', (e) => { e.preventDefault(); logIn(); });
   registerForm.addEventListener('submit', (e) => { e.preventDefault(); logIn(); });
 
-  // ============ Account dropdown ============
   const accountBtn = document.getElementById('account-btn');
   const accountDropdown = document.getElementById('account-dropdown');
   accountBtn.addEventListener('click', (e) => { e.stopPropagation(); accountDropdown.classList.toggle('open'); });
@@ -2206,7 +2104,6 @@
     showToast('Logged out');
   });
 
-  // ============ Bet slip ============
   function keyFor(match, pick){ return match + '::' + pick; }
 
   function renderSlip(){
@@ -2307,7 +2204,6 @@
   document.getElementById('desktop-place').addEventListener('click', () => placeBet('desktop-stake'));
   document.getElementById('mobile-place').addEventListener('click', () => placeBet('mobile-stake'));
 
-  // Mobile slip open/close
   const slipOverlay = document.getElementById('slip-overlay');
   document.getElementById('mobile-bar').addEventListener('click', () => slipOverlay.classList.add('open'));
   document.getElementById('slip-close').addEventListener('click', () => slipOverlay.classList.remove('open'));
@@ -2317,11 +2213,9 @@
 
 })();
 
-/* JavaScript for page-saccaia-trading-demo */
 (function(){
   if (!document.body.classList.contains('page-saccaia-trading-demo')) return;
 
-  // ===== Order ticket modal (Buy/Sell) — cosmetic only =====
   const orderBackdrop = document.getElementById('orderModalBackdrop');
   const orderModalTitle = document.getElementById('orderModalTitle');
   const modalPrice = document.getElementById('modalPrice');
@@ -2353,8 +2247,6 @@
     });
   });
 
-  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
-  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
   const backdrop = document.getElementById('modalBackdrop');
   const modalTitle = document.getElementById('modalTitle');
 
@@ -2432,15 +2324,12 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
       document.getElementById('accountDropdown').classList.remove('open');
     }
   });
-
-  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
@@ -2472,7 +2361,6 @@
     });
   });
 
-  // Wallet <-> Open Orders switcher
   document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
@@ -2484,8 +2372,6 @@
   document.getElementById('depositBtn').addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
   document.getElementById('withdrawBtn').addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
 
-  // ===== Live tick simulation — nudges the real snapshot prices client-side. =====
-  // Not a real market data stream: a genuine live feed needs a paid provider + backend.
   (function(){
     const toggle = document.getElementById('liveToggle');
     const toggleLabel = document.getElementById('liveToggleLabel');
@@ -2529,7 +2415,6 @@
     });
   })();
 
-  // Dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(theme){
     if(theme === 'dark'){
@@ -2560,11 +2445,9 @@
 
 })();
 
-/* JavaScript for page-trading-how */
 (function(){
   if (!document.body.classList.contains('page-trading-how')) return;
 
-  // ===== Order ticket modal (Buy/Sell) — cosmetic only =====
   const orderBackdrop = document.getElementById('orderModalBackdrop');
   const orderModalTitle = document.getElementById('orderModalTitle');
   const modalPrice = document.getElementById('modalPrice');
@@ -2596,8 +2479,6 @@
     });
   });
 
-  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
-  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
   const backdrop = document.getElementById('modalBackdrop');
   const modalTitle = document.getElementById('modalTitle');
 
@@ -2675,15 +2556,12 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
       document.getElementById('accountDropdown').classList.remove('open');
     }
   });
-
-  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
@@ -2719,7 +2597,6 @@
     });
   });
 
-  // Wallet <-> Open Orders switcher
   document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
@@ -2731,8 +2608,6 @@
   document.getElementById('depositBtn')?.addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
   document.getElementById('withdrawBtn')?.addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
 
-  // ===== Live tick simulation — nudges the real snapshot prices client-side. =====
-  // Not a real market data stream: a genuine live feed needs a paid provider + backend.
   (function(){
     const toggle = document.getElementById('liveToggle');
     const toggleLabel = document.getElementById('liveToggleLabel');
@@ -2776,7 +2651,6 @@
     });
   })();
 
-  // Dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(theme){
     if(theme === 'dark'){
@@ -2797,7 +2671,6 @@
   });
 
   let toastTimer;
-  // Footer newsletter — cosmetic only
   document.getElementById('footerSubscribe')?.addEventListener('click', () => {
     const val = document.getElementById('footerEmail').value.trim();
     if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
@@ -2818,11 +2691,9 @@
 
 })();
 
-/* JavaScript for page-trading-markets */
 (function(){
   if (!document.body.classList.contains('page-trading-markets')) return;
 
-  // ===== Order ticket modal (Buy/Sell) — cosmetic only =====
   const orderBackdrop = document.getElementById('orderModalBackdrop');
   const orderModalTitle = document.getElementById('orderModalTitle');
   const modalPrice = document.getElementById('modalPrice');
@@ -2854,8 +2725,6 @@
     });
   });
 
-  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
-  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
   const backdrop = document.getElementById('modalBackdrop');
   const modalTitle = document.getElementById('modalTitle');
 
@@ -2933,15 +2802,12 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
       document.getElementById('accountDropdown').classList.remove('open');
     }
   });
-
-  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
@@ -2977,7 +2843,6 @@
     });
   });
 
-  // Wallet <-> Open Orders switcher
   document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
@@ -2989,8 +2854,6 @@
   document.getElementById('depositBtn')?.addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
   document.getElementById('withdrawBtn')?.addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
 
-  // ===== Live tick simulation — nudges the real snapshot prices client-side. =====
-  // Not a real market data stream: a genuine live feed needs a paid provider + backend.
   (function(){
     const toggle = document.getElementById('liveToggle');
     const toggleLabel = document.getElementById('liveToggleLabel');
@@ -3034,7 +2897,6 @@
     });
   })();
 
-  // Dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(theme){
     if(theme === 'dark'){
@@ -3055,7 +2917,6 @@
   });
 
   let toastTimer;
-  // Footer newsletter — cosmetic only
   document.getElementById('footerSubscribe')?.addEventListener('click', () => {
     const val = document.getElementById('footerEmail').value.trim();
     if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
@@ -3076,11 +2937,9 @@
 
 })();
 
-/* JavaScript for page-trading-wallet */
 (function(){
   if (!document.body.classList.contains('page-trading-wallet')) return;
 
-  // ===== Order ticket modal (Buy/Sell) — cosmetic only =====
   const orderBackdrop = document.getElementById('orderModalBackdrop');
   const orderModalTitle = document.getElementById('orderModalTitle');
   const modalPrice = document.getElementById('modalPrice');
@@ -3112,8 +2971,6 @@
     });
   });
 
-  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
-  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
   const backdrop = document.getElementById('modalBackdrop');
   const modalTitle = document.getElementById('modalTitle');
 
@@ -3191,15 +3048,12 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
       document.getElementById('accountDropdown').classList.remove('open');
     }
   });
-
-  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
@@ -3235,7 +3089,6 @@
     });
   });
 
-  // Wallet <-> Open Orders switcher
   document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
@@ -3247,8 +3100,6 @@
   document.getElementById('depositBtn')?.addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
   document.getElementById('withdrawBtn')?.addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
 
-  // ===== Live tick simulation — nudges the real snapshot prices client-side. =====
-  // Not a real market data stream: a genuine live feed needs a paid provider + backend.
   (function(){
     const toggle = document.getElementById('liveToggle');
     const toggleLabel = document.getElementById('liveToggleLabel');
@@ -3292,7 +3143,6 @@
     });
   })();
 
-  // Dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(theme){
     if(theme === 'dark'){
@@ -3313,7 +3163,6 @@
   });
 
   let toastTimer;
-  // Footer newsletter — cosmetic only
   document.getElementById('footerSubscribe')?.addEventListener('click', () => {
     const val = document.getElementById('footerEmail').value.trim();
     if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
@@ -3334,11 +3183,9 @@
 
 })();
 
-/* JavaScript for page-trading */
 (function(){
   if (!document.body.classList.contains('page-trading')) return;
 
-  // ===== Order ticket modal (Buy/Sell) — cosmetic only =====
   const orderBackdrop = document.getElementById('orderModalBackdrop');
   const orderModalTitle = document.getElementById('orderModalTitle');
   const modalPrice = document.getElementById('modalPrice');
@@ -3370,8 +3217,6 @@
     });
   });
 
-  // ===== Auth modal — cosmetic only. Client-side validation + a fake per-tab session (sessionStorage). =====
-  // No account is ever created, no credentials are sent anywhere or persisted beyond this browser tab.
   const backdrop = document.getElementById('modalBackdrop');
   const modalTitle = document.getElementById('modalTitle');
 
@@ -3449,15 +3294,12 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
       document.getElementById('accountDropdown').classList.remove('open');
     }
   });
-
-  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
@@ -3493,7 +3335,6 @@
     });
   });
 
-  // Wallet <-> Open Orders switcher
   document.querySelectorAll('.wallet-tab').forEach(tabBtn => {
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
@@ -3505,8 +3346,6 @@
   document.getElementById('depositBtn')?.addEventListener('click', () => showToast('This is a demo — no real deposit was made'));
   document.getElementById('withdrawBtn')?.addEventListener('click', () => showToast('This is a demo — no real withdrawal was made'));
 
-  // ===== Live tick simulation — nudges the real snapshot prices client-side. =====
-  // Not a real market data stream: a genuine live feed needs a paid provider + backend.
   (function(){
     const toggle = document.getElementById('liveToggle');
     const toggleLabel = document.getElementById('liveToggleLabel');
@@ -3550,7 +3389,6 @@
     });
   })();
 
-  // Dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(theme){
     if(theme === 'dark'){
@@ -3571,7 +3409,6 @@
   });
 
   let toastTimer;
-  // Footer newsletter — cosmetic only
   document.getElementById('footerSubscribe')?.addEventListener('click', () => {
     const val = document.getElementById('footerEmail').value.trim();
     if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){

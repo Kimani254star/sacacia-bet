@@ -78,8 +78,7 @@
         </div>
       </div>
 
-      <!-- Guest: empty state -->
-      <div class="empty-card guest-only" id="hero-guest">
+            <div class="empty-card guest-only" id="hero-guest">
         <div class="skel skel-line" style="width:90px; height:10px;"></div>
         <div class="skel skel-line" style="width:100%; height:20px; margin-top:12px;"></div>
         <div class="skel skel-line" style="width:70%; height:20px;"></div>
@@ -89,8 +88,7 @@
         </div>
       </div>
 
-      <!-- Logged in: featured upcoming match -->
-      <div class="live-card auth-only" id="hero-auth" style="display:none;">
+            <div class="live-card auth-only" id="hero-auth" style="display:none;">
         <span class="live-tag" style="color:var(--gold)">UPCOMING · PREMIER LEAGUE</span>
         <div class="teams">
           <div class="team-row"><span>Manchester United</span></div>
@@ -181,8 +179,7 @@
         </button>
       </div>
 
-      <!-- Guest: skeleton -->
-      <div id="fixture-empty" class="guest-only">
+            <div id="fixture-empty" class="guest-only">
         <div class="fixture-skel"><div><div class="skel skel-league"></div><div class="skel skel-teams"></div></div><div class="skel-odds"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div></div>
         <div class="fixture-skel"><div><div class="skel skel-league"></div><div class="skel skel-teams"></div></div><div class="skel-odds"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div></div>
         <div class="fixture-skel"><div><div class="skel skel-league"></div><div class="skel skel-teams"></div></div><div class="skel-odds"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div></div>
@@ -192,8 +189,7 @@
         </div>
       </div>
 
-      <!-- Logged in: real fixtures pulled from a licensed sports-data feed -->
-      <div id="fixture-live" class="auth-only" style="display:none;">
+            <div id="fixture-live" class="auth-only" style="display:none;">
         <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px;">Main 1X2 odds are estimated from match win-probability data; double chance, over/under and both-teams-to-score odds are illustrative examples — none are live bookmaker prices.</p>
 
         <div class="league-filter" id="league-filter">
@@ -574,8 +570,7 @@
 
   </main>
 
-  <!-- Desktop bet slip -->
-  <aside class="slip-panel" id="desktop-slip">
+    <aside class="slip-panel" id="desktop-slip">
     <div class="slip-head">
       <h3>Bet slip</h3>
       <span class="slip-count" id="desktop-count" style="display:none">0</span>
@@ -606,7 +601,6 @@
   </aside>
 </div>
 
-<!-- Mobile slip bar + overlay (auth only) -->
 <div class="mobile-slip-bar hidden force-hidden" id="mobile-bar">
   <span id="mobile-bar-text">0 selections</span>
   <span id="mobile-bar-odds">View slip →</span>
@@ -651,7 +645,6 @@
   </div>
 </footer>
 
-<!-- Login / Register modal -->
 <div class="modal-overlay" id="auth-overlay">
   <div class="modal">
     <div class="modal-head"><h2 id="modal-title">Log in</h2><button class="modal-close" id="modal-close">✕</button></div>
@@ -688,7 +681,6 @@
   </div>
 </div>
 
-<!-- My Bets modal -->
 <div class="modal-overlay" id="mybets-overlay">
   <div class="modal" style="max-width:460px;">
     <div class="modal-head"><h2>My bets</h2><button class="modal-close" id="mybets-close">✕</button></div>
@@ -696,7 +688,6 @@
   </div>
 </div>
 
-<!-- Responsible gambling modal -->
 <div class="modal-overlay" id="rg-overlay">
   <div class="modal">
     <div class="modal-head"><h2>Responsible gambling</h2><button class="modal-close" id="rg-close">✕</button></div>
@@ -709,7 +700,6 @@
   </div>
 </div>
 
-<!-- Deposit modal -->
 <div class="modal-overlay" id="deposit-overlay">
   <div class="modal">
     <div class="modal-head"><h2>Deposit</h2><button class="modal-close" id="deposit-close">✕</button></div>
@@ -773,7 +763,6 @@
   </div>
 </div>
 
-<!-- Withdraw modal -->
 <div class="modal-overlay" id="withdraw-overlay">
   <div class="modal">
     <div class="modal-head"><h2>Withdraw</h2><button class="modal-close" id="withdraw-close">✕</button></div>
@@ -811,15 +800,13 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
-
-
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script src="audit-log.js"></script>
 <script src="scripts.js"></script>
   <script type="module" src="supabase-auth.js"></script>
 <script src="pwa-register.js" defer></script>
-  
+
 <section class="flashscore-feed-section" aria-live="polite">
   <h2>Sports fixtures &amp; results</h2>
   <p data-flashscore-status>Connecting to Flashscore-sourced data…</p>
@@ -828,5 +815,6 @@
 <script src="flashscore-config.js"></script>
 <script src="flashscore-feed.js"></script>
 <script src="production-data-guard.js"></script>
+<script src="ui-fixes.js" defer></script>
 </body>
 </html>

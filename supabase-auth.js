@@ -1,6 +1,5 @@
 import { supabase } from "./supabase.js";
 
-// Auth forms are intercepted in capture phase so legacy demo handlers cannot create fake sessions.
 const $ = (id) => document.getElementById(id);
 const show = (message) => {
   const toast = $("slipToast");
