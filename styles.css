@@ -8297,3 +8297,36 @@ body.page-trading .mt-actions {justify-content:flex-start;}
 .flashscore-feed-section [data-flashscore-status]{font-size:13px;opacity:.8}
 .flashscore-event{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
 .flashscore-event small{opacity:.65}
+
+
+/* Acacia Bet sportsbook refresh — familiar compact sportsbook layout, original Acacia styling */
+body.page-index { --bg:#f2f5f2; --surface:#ffffff; --surface-2:#e8f0e9; --gold:#f5c400; --gold-dim:#d5a900; --green:#087b43; --green-soft:#dcefe3; --text:#17251c; --text-muted:#64756a; --divider:rgba(15,55,32,.13); --live:#d92d20; font-family:Arial,Helvetica,sans-serif; }
+body.page-index header { background:#075b35; color:#fff; border-bottom:3px solid #f5c400; }
+body.page-index .wordmark { color:#fff; letter-spacing:.04em; font-family:Arial,sans-serif; font-weight:900; }
+body.page-index .wordmark span { color:#f5c400; }
+body.page-index .primary-nav a { color:rgba(255,255,255,.88); }
+body.page-index .primary-nav a.active, body.page-index .primary-nav a:hover { color:#f5c400; }
+body.page-index .btn-gold { background:#f5c400; border-color:#f5c400; color:#173321; font-weight:800; }
+body.page-index .btn-ghost { color:inherit; }
+body.page-index .hero { background:linear-gradient(120deg,#075b35,#0c7b47); color:#fff; border-radius:8px; margin:18px 0; padding:26px; }
+body.page-index .hero p { color:rgba(255,255,255,.82); }
+body.page-index .section, body.page-index .promo-band, body.page-index .jackpot { border-radius:7px; }
+body.page-index .section { background:#fff; border:1px solid var(--divider); padding:18px; margin:14px 0; }
+body.page-index .section-head h2 { color:#075b35; font-family:Arial,sans-serif; font-size:20px; font-weight:800; }
+body.page-index .tabs { background:#e8f0e9; border-radius:6px; padding:4px; gap:4px; }
+body.page-index .tab { color:#345443; border-radius:4px; }
+body.page-index .tab.active { background:#087b43; color:#fff; }
+body.page-index .odds-btn, body.page-index .odd-btn { background:#edf3ee; border:1px solid #d5e2d8; color:#183c28; border-radius:4px; }
+body.page-index .odds-btn:hover, body.page-index .odd-btn:hover, body.page-index .odds-btn.selected, body.page-index .odd-btn.selected { background:#f5c400; border-color:#d5a900; color:#17251c; }
+body.page-index .odds-btn .price, body.page-index .odd-btn .val { color:#075b35; font-weight:800; }
+body.page-index .slip-panel { background:#fff; border:1px solid #d7e2d9; border-top:4px solid #087b43; border-radius:6px; color:#17251c; }
+body.page-index .slip-head { background:#e8f0e9; color:#075b35; }
+body.page-index .promo-band { background:#075b35; color:#fff; }
+body.page-index .promo-card { background:#0b7041; border:1px solid rgba(255,255,255,.15); }
+body.page-index .promo-card h3 { color:#f5d44c; }
+body.page-index .acacia-sports-shortcuts { display:flex; gap:8px; flex-wrap:wrap; margin:14px 0; }
+body.page-index .sport-shortcut { display:flex; align-items:center; gap:8px; padding:11px 15px; border-radius:5px; background:#fff; border:1px solid #d8e4da; color:#075b35; font-size:13px; font-weight:800; }
+body.page-index .sport-shortcut.active, body.page-index .sport-shortcut:hover { background:#087b43; border-color:#087b43; color:#fff; }
+body.page-index .sport-shortcut span { font-size:18px; }
+body.page-index .flashscore-feed-section { background:#fff; color:#17251c; border:1px solid #d8e4da; border-radius:7px; margin:18px auto; padding:18px; max-width:1500px; }
+@media(max-width:900px){ body.page-index .hero{padding:18px;} body.page-index .acacia-sports-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));} body.page-index .sport-shortcut{justify-content:center;} }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#172554"><title>Acacia Bet — Build Log</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css">
+<style>
+.build-shell{max-width:980px;margin:34px auto;padding:0 20px 48px;color:var(--text,#172033)}
+.build-top,.build-entry{background:var(--card,#fff);border:1px solid var(--border,#e3e8ef);border-radius:14px;padding:22px;margin:0 0 16px;box-shadow:0 4px 18px rgba(15,23,42,.045)}
+.build-top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.build-top h1{margin:0 0 6px;font-size:clamp(25px,4vw,34px)}.build-muted{color:var(--muted,#64748b);font-size:14px;line-height:1.6}
+.build-entry h2{font-size:20px;margin:0 0 4px}.build-entry h3{font-size:14px;text-transform:uppercase;letter-spacing:.08em;margin:20px 0 8px;color:var(--muted,#64748b)}
+.build-entry ul{margin:8px 0 0;padding-left:22px;line-height:1.75}.build-version{display:inline-block;font-size:12px;font-weight:700;padding:5px 9px;border-radius:999px;background:rgba(217,164,65,.16);color:#9a6a12;margin-bottom:10px}
+.build-nav{display:flex;gap:10px;flex-wrap:wrap}.build-nav a{display:inline-flex;align-items:center;text-decoration:none;border-radius:9px;padding:10px 14px;background:#172554;color:white;font-weight:600;font-size:14px}.build-nav a.secondary{background:transparent;color:inherit;border:1px solid var(--border,#dbe2ea)}
+.build-note{border-left:3px solid #d6a441;padding:10px 14px;background:rgba(214,164,65,.09);border-radius:0 8px 8px 0;line-height:1.6}
+@media(max-width:600px){.build-shell{margin:18px auto;padding:0 14px 32px}.build-top,.build-entry{padding:17px}}
+</style></head>
+<body>
+<header><div class="header-inner"><a class="wordmark" href="index.html" style="text-decoration:none;color:inherit">Acacia<span>Bets</span></a><nav class="primary-nav"><a href="index.html">Home</a><a href="index.html#fixtures">Sports</a><a href="logs.html">Activity logs</a><a class="active" href="build-log.html">Build Log</a></nav></div></header>
+<main class="build-shell">
+<section class="build-top"><div><h1>Build Log</h1><div class="build-muted">What’s new in Acacia Bet — product updates, fixes and release notes.</div></div><div class="build-nav"><a href="index.html">Back to app</a><a class="secondary" href="logs.html">Activity logs</a></div></section>
+<article class="build-entry"><span class="build-version">Build · 19 Nov 2026</span><h2>Flashscore feed integration</h2><div class="build-muted">Latest app update</div>
+<h3>Added</h3><ul>
+<li>Added a Flashscore feed adapter for fixtures and results, designed to receive normalized data from a server-side feed endpoint.</li>
+<li>Added event status, start time and score fields to the feed display.</li>
+<li>Added five-minute refresh polling and stale-feed/error status handling.</li>
+<li>Added a dedicated in-app Build Log page and navigation links.</li>
+</ul>
+<h3>Fixed / improved</h3><ul>
+<li>Feed content is rendered as text with HTML escaping rather than inserting provider values as markup.</li>
+<li>Provider credentials are not placed in browser-side JavaScript.</li>
+<li>Updated the offline app shell to include the feed integration and this Build Log page.</li>
+</ul>
+<h3>Notes</h3><div class="build-note">Live Flashscore data is not active yet. Acacia Bet still needs an authorized data provider/API, a deployed server-side endpoint (for example, a Supabase Edge Function), and its secret configured on the server. The feed URL is intentionally blank until that setup is completed. This build does not scrape Flashscore pages or invent fixtures and scores.</div>
+</article>
+<article class="build-entry"><span class="build-version">Build · Previous updates</span><h2>App logging and production-data safeguards</h2>
+<h3>Added</h3><ul><li>Added the Activity Logs screen with on-device event history and CSV export.</li><li>Added a clear-logs action and a notice that passwords and form contents are not recorded.</li><li>Added production-data safeguards so demo fixtures and simulated prices are not presented as verified live data.</li></ul>
+<h3>Notes</h3><ul><li>Activity Logs record actions on the current device; they are distinct from this release Build Log.</li><li>Payment, betting settlement and live sports-data services require their own authorized production integrations and configuration.</li></ul>
+</article>
+<p class="build-muted" style="text-align:center">Acacia Bet · Build Log</p>
+</main><script src="pwa-register.js" defer></script></body></html>

@@ -10,7 +10,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Acacia Bets — Betting on your terms</title>
+<title>Acacia Bet — Sportsbook</title>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -18,13 +18,15 @@
 
 <header>
   <div class="header-inner">
-    <div class="wordmark">Acacia<span>Bets</span></div>
+    <div class="wordmark">ACACIA<span> BET</span></div>
     <nav class="primary-nav">
       <a href="logs.html">Activity logs</a>
+      <a href="build-log.html">Build Log</a>
       <a href="#" class="active">Home</a>
       <a href="#fixtures">Sports</a>
+      <a href="markets.html">Live &amp; upcoming</a>
       <a href="#jackpot">Jackpot</a>
-      <a href="#">Promotions</a>
+      <a href="#promotions">Promotions</a>
     </nav>
     <div class="header-actions">
       <button class="btn btn-ghost icon-btn" id="theme-toggle" aria-label="Switch to light mode" title="Switch appearance">
@@ -125,7 +127,7 @@
       </div>
     </section>
 
-    <section class="promo-band">
+    <section class="promo-band" id="promotions">
       <div class="promo-track" id="promo-track">
         <div class="promo-card">
           <div><div class="tag">Welcome offer</div><h3>100% deposit match up to KSh 5,000</h3><p>New accounts get a matched bonus on their first deposit.</p></div>
@@ -143,6 +145,14 @@
       <div class="promo-dots" id="promo-dots">
         <span class="active" data-i="0"></span><span data-i="1"></span><span data-i="2"></span>
       </div>
+    </section>
+
+    <section class="acacia-sports-shortcuts" aria-label="Sports shortcuts">
+      <a href="#fixtures" class="sport-shortcut active"><span>⚽</span> Football</a>
+      <a href="#fixtures" class="sport-shortcut"><span>🏀</span> Basketball</a>
+      <a href="#fixtures" class="sport-shortcut"><span>🏉</span> Rugby</a>
+      <a href="#fixtures" class="sport-shortcut"><span>🎾</span> Tennis</a>
+      <a href="markets.html" class="sport-shortcut"><span>🔥</span> All markets</a>
     </section>
 
     <section class="section" id="fixtures">
@@ -633,6 +643,7 @@
     <a href="#">Responsible gambling</a>
     <a href="#">Help &amp; support</a>
     <a href="#">About Acacia Bets</a>
+    <a href="build-log.html">Build Log</a>
   </div>
   <div class="footer-bottom">
     <span>© 2026 Acacia Bets. Licensed by the Betting Control and Licensing Board (licence pending).</span>
