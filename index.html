@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="theme-color" content="#172554">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Acacia Bet">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Acacia Bets — Betting on your terms</title>
@@ -13,6 +20,7 @@
   <div class="header-inner">
     <div class="wordmark">Acacia<span>Bets</span></div>
     <nav class="primary-nav">
+      <a href="logs.html">Activity logs</a>
       <a href="#" class="active">Home</a>
       <a href="#fixtures">Sports</a>
       <a href="#jackpot">Jackpot</a>
@@ -796,7 +804,18 @@
 
 
 
+<script src="audit-log.js"></script>
 <script src="scripts.js"></script>
   <script type="module" src="supabase-auth.js"></script>
+<script src="pwa-register.js" defer></script>
+  
+<section class="flashscore-feed-section" aria-live="polite">
+  <h2>Sports fixtures &amp; results</h2>
+  <p data-flashscore-status>Connecting to Flashscore-sourced data…</p>
+  <div data-flashscore-events></div>
+</section>
+<script src="flashscore-config.js"></script>
+<script src="flashscore-feed.js"></script>
+<script src="production-data-guard.js"></script>
 </body>
 </html>

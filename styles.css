@@ -8290,3 +8290,10 @@ body.page-trading .mt-actions {justify-content:flex-start;}
   
 @media  (prefers-reduced-motion: reduce){body.page-trading * {animation:none !important; transition:none !important;}}
 
+
+/* Flashscore feed integration */
+.flashscore-feed-section{margin:24px 0;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel,transparent)}
+.flashscore-feed-section h2{margin-top:0}
+.flashscore-feed-section [data-flashscore-status]{font-size:13px;opacity:.8}
+.flashscore-event{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.flashscore-event small{opacity:.65}

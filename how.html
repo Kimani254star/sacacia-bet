@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="theme-color" content="#172554">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Acacia Bet">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Acacia Bet — How it works</title>
@@ -31,7 +38,7 @@
       <div class="account-menu" id="accountMenu" style="display:none;">
         <button class="account-chip" id="accountChip">
           <span class="avatar" id="accountAvatar">D</span>
-          <span id="accountName">Demo User</span>
+          <span id="accountName">Guest</span>
         </button>
         <div class="account-dropdown" id="accountDropdown">
           <button class="ad-item" id="logoutBtn">Log out</button>
@@ -203,7 +210,10 @@
 
 
 
+<script src="audit-log.js"></script>
 <script src="scripts.js"></script>
   <script type="module" src="supabase-auth.js"></script>
+<script src="pwa-register.js" defer></script>
+  <script src="production-data-guard.js"></script>
 </body>
 </html>
