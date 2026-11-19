@@ -28,42 +28,7 @@
   }
   const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
-  document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    const emailOk = isValidEmail(email);
-    const passOk = password.length >= 6;
-    setError('loginEmailField', !emailOk);
-    setError('loginPasswordField', !passOk);
-    if(!emailOk || !passOk) return;
-    startFakeSession(email.split('@')[0]);
-  });
-
-  document.getElementById('signupForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('signupName').value.trim();
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const confirm = document.getElementById('signupConfirm').value;
-    const nameOk = name.length > 0;
-    const emailOk = isValidEmail(email);
-    const passOk = password.length >= 6;
-    const confirmOk = passOk && password === confirm;
-    setError('signupNameField', !nameOk);
-    setError('signupEmailField', !emailOk);
-    setError('signupPasswordField', !passOk);
-    setError('signupConfirmField', !confirmOk);
-    if(!nameOk || !emailOk || !passOk || !confirmOk) return;
-    startFakeSession(name);
-  });
-
-  function startFakeSession(name){
-    sessionStorage.setItem('saccaia-demo-user', name);
-    backdrop.classList.remove('open');
-    applySessionUI(name);
-    showToast('Signed in as ' + name + ' — demo session only, nothing was sent to a server');
-  }
+  // Authentication is handled by supabase-auth.js; no fake browser-only sessions.
 
   function applySessionUI(name){
     document.getElementById('loggedOutActions').style.display = 'none';
@@ -81,11 +46,7 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('saccaia-demo-user');
-    clearSessionUI();
-    showToast('Logged out (demo session ended)');
-  });
+  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -94,8 +55,7 @@
   });
 
   // Restore session on reload within the same tab
-  const existingUser = sessionStorage.getItem('saccaia-demo-user');
-  if(existingUser) applySessionUI(existingUser);
+  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   // Odds selection — cosmetic only, toggles style, updates bet slip pane, shows toast
   function renderSlip(){
@@ -552,11 +512,7 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('saccaia-demo-user');
-    clearSessionUI();
-    showToast('Logged out (demo session ended)');
-  });
+  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -565,8 +521,7 @@
   });
 
   // Restore session on reload within the same tab
-  const existingUser = sessionStorage.getItem('saccaia-demo-user');
-  if(existingUser) applySessionUI(existingUser);
+  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   // Odds selection — cosmetic only, toggles style, updates bet slip pane, shows toast
   function renderSlip(){
@@ -1023,11 +978,7 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('saccaia-demo-user');
-    clearSessionUI();
-    showToast('Logged out (demo session ended)');
-  });
+  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -1036,8 +987,7 @@
   });
 
   // Restore session on reload within the same tab
-  const existingUser = sessionStorage.getItem('saccaia-demo-user');
-  if(existingUser) applySessionUI(existingUser);
+  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   // Odds selection — cosmetic only, toggles style, updates bet slip pane, shows toast
   function renderSlip(){
@@ -1494,11 +1444,7 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('saccaia-demo-user');
-    clearSessionUI();
-    showToast('Logged out (demo session ended)');
-  });
+  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -1507,8 +1453,7 @@
   });
 
   // Restore session on reload within the same tab
-  const existingUser = sessionStorage.getItem('saccaia-demo-user');
-  if(existingUser) applySessionUI(existingUser);
+  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   // Odds selection — cosmetic only, toggles style, updates bet slip pane, shows toast
   function renderSlip(){
@@ -2487,11 +2432,7 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('saccaia-demo-user');
-    clearSessionUI();
-    showToast('Logged out (demo session ended)');
-  });
+  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -2499,8 +2440,7 @@
     }
   });
 
-  const existingUser = sessionStorage.getItem('saccaia-demo-user');
-  if(existingUser) applySessionUI(existingUser);
+  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
@@ -2735,11 +2675,7 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('saccaia-demo-user');
-    clearSessionUI();
-    showToast('Logged out (demo session ended)');
-  });
+  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -2747,8 +2683,7 @@
     }
   });
 
-  const existingUser = sessionStorage.getItem('saccaia-demo-user');
-  if(existingUser) applySessionUI(existingUser);
+  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
@@ -2998,11 +2933,7 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('saccaia-demo-user');
-    clearSessionUI();
-    showToast('Logged out (demo session ended)');
-  });
+  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -3010,8 +2941,7 @@
     }
   });
 
-  const existingUser = sessionStorage.getItem('saccaia-demo-user');
-  if(existingUser) applySessionUI(existingUser);
+  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
@@ -3261,11 +3191,7 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('saccaia-demo-user');
-    clearSessionUI();
-    showToast('Logged out (demo session ended)');
-  });
+  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -3273,8 +3199,7 @@
     }
   });
 
-  const existingUser = sessionStorage.getItem('saccaia-demo-user');
-  if(existingUser) applySessionUI(existingUser);
+  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
@@ -3524,11 +3449,7 @@
   document.getElementById('accountChip').addEventListener('click', () => {
     document.getElementById('accountDropdown').classList.toggle('open');
   });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('saccaia-demo-user');
-    clearSessionUI();
-    showToast('Logged out (demo session ended)');
-  });
+  // Supabase sign-out is handled by supabase-auth.js.
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('accountMenu');
     if(menu.style.display !== 'none' && !menu.contains(e.target)){
@@ -3536,8 +3457,7 @@
     }
   });
 
-  const existingUser = sessionStorage.getItem('saccaia-demo-user');
-  if(existingUser) applySessionUI(existingUser);
+  // Do not restore demo-only sessions; Supabase restores the authenticated session.
 
   function addOrder(order){
     const pane = document.getElementById('ordersPane');
