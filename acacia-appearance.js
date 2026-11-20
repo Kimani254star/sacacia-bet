@@ -13,8 +13,24 @@
   var root = document.documentElement;
   var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
-  function lget() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
-  function lset(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+  /* Settings are kept per login: each signed-in account has its own look, and the device look is used when logged out. */
+  var USER = null; try { USER = localStorage.getItem('acxst_user') || null; } catch (e) {}
+  var onSave = null;
+  function curKey() { return USER ? KEY + '_u_' + USER : KEY; }
+  function lget() { try { return JSON.parse(localStorage.getItem(curKey()) || '{}') || {}; } catch (e) { return {}; } }
+  function lset(o) { try { localStorage.setItem(curKey(), JSON.stringify(o)); } catch (e) {} if (USER && onSave) { try { onSave(o); } catch (e) {} } }
+  function setUser(id, remote) {
+    id = id ? String(id).toLowerCase() : null;
+    if (id === USER) return;
+    var first = id !== USER; USER = id;
+    try { if (id) localStorage.setItem('acxst_user', id); else localStorage.removeItem('acxst_user'); } catch (e) {}
+    if (id) {
+      var have = null; try { have = localStorage.getItem(curKey()); } catch (e) {}
+      if (first && remote && typeof remote === 'object' && Object.keys(remote).length) { try { localStorage.setItem(curKey(), JSON.stringify(remote)); } catch (e) {} }
+      else if (!have) { try { localStorage.setItem(curKey(), localStorage.getItem(KEY) || '{}'); } catch (e) {} }
+    }
+    apply(); if (panel && panel.classList.contains('on')) draw();
+  }
   function hex2rgb(h) { h = h.replace('#', ''); if (h.length === 3) h = h.replace(/(.)/g, '$1$1'); return [parseInt(h.substr(0, 2), 16), parseInt(h.substr(2, 2), 16), parseInt(h.substr(4, 2), 16)]; }
   function mix(a, b, t) { var A = hex2rgb(a), B = hex2rgb(b); return 'rgb(' + A.map(function (v, i) { return Math.round(v * t + B[i] * (1 - t)); }).join(',') + ')'; }
 
@@ -74,7 +90,7 @@
   '#acx-root{--c-bg:#f3f4f6;--c-card:#fff;--c-ink:#111827;--c-mute:#6b7280;--c-line:#e5e7eb;--c-pri:#1e3a8a;--c-pri2:#1d4ed8}' +
   'html[data-acx-theme=dark] #acx-root{--c-bg:#0b1020;--c-card:#151b2e;--c-ink:#e5e7eb;--c-mute:#9ca3af;--c-line:#27304a;--c-pri:#3b5bdb;--c-pri2:#5c7cfa}' +
   '#acx-root,#acx-root *{box-sizing:border-box}' +
-  '#acx-fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2147482000;width:46px;height:46px;border-radius:50%;border:1px solid var(--c-line);background:var(--c-card);color:var(--c-ink);font-size:21px;line-height:1;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2)}' +
+  '#acx-fab{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2147482000;width:46px;height:46px;border-radius:50%;border:1px solid var(--c-line);background:var(--c-card);color:var(--c-ink);font-size:21px;line-height:1;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2)}' +
   '#acx-scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2147482500;display:none}#acx-scrim.on{display:block}' +
   '#acx-panel{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:100%;background:var(--c-bg);color:var(--c-ink);z-index:2147483000;display:flex;flex-direction:column;transform:translateX(105%);transition:transform .2s;box-shadow:-8px 0 30px rgba(0,0,0,.25);font-size:16px;line-height:1.35;visibility:hidden}' +
   '#acx-panel.on{transform:none;visibility:visible}' +
@@ -130,7 +146,7 @@
     panel.addEventListener('click', function (e) {
       var b = e.target.closest('[data-a]'); if (!b) return; var a = b.getAttribute('data-a');
       if (a === 'close') close();
-      else if (a === 'reset') { try { localStorage.removeItem(KEY); } catch (er) {} apply(); draw(); }
+      else if (a === 'reset') { try { localStorage.removeItem(curKey()); } catch (er) {} if (USER && onSave) { try { onSave({}); } catch (er) {} } apply(); draw(); }
       else change(a, b.getAttribute('data-v'));
     });
     panel.addEventListener('change', function (e) { if (e.target && e.target.id === 'acx-font') change('font', e.target.value); });
@@ -140,13 +156,18 @@
   var TOGGLE = '#theme-toggle,#themeToggle,.theme-toggle';
   function init() {
     injectCss(); build();
-    if (!document.querySelector(TOGGLE)) {
-      fab = document.createElement('button'); fab.id = 'acx-fab'; fab.type = 'button'; fab.setAttribute('aria-label', 'Appearance'); fab.title = 'Appearance'; fab.innerHTML = '&#9788;';
-      fab.addEventListener('click', open);
-      panel.parentNode.appendChild(fab);
-    } else {
-      document.querySelectorAll(TOGGLE).forEach(function (b) { b.setAttribute('aria-label', 'Appearance'); b.title = 'Appearance'; });
+    /* The round button shows whenever no theme button is visible on screen (for example inside the
+       Rides dashboards or after logging in), so Appearance is always one tap away. */
+    fab = document.createElement('button'); fab.id = 'acx-fab'; fab.type = 'button'; fab.setAttribute('aria-label', 'Appearance'); fab.title = 'Appearance'; fab.innerHTML = '&#9788;';
+    fab.addEventListener('click', open);
+    panel.parentNode.appendChild(fab);
+    function sync() {
+      var list = document.querySelectorAll(TOGGLE), vis = false;
+      list.forEach(function (b) { b.setAttribute('aria-label', 'Appearance'); b.title = 'Appearance'; if (b.offsetParent !== null) vis = true; });
+      fab.style.display = vis ? 'none' : '';
     }
+    sync(); setInterval(sync, 600);
+    document.addEventListener('click', function () { setTimeout(sync, 80); }, true);
   }
   /* the old light/dark button now opens the Appearance panel */
   document.addEventListener('click', function (e) {
@@ -157,9 +178,9 @@
   apply();
   injectCss();
   if (mq) { var h = function () { if (!lget().theme || lget().theme === 'auto') apply(); }; if (mq.addEventListener) mq.addEventListener('change', h); else if (mq.addListener) mq.addListener(h); }
-  window.addEventListener('storage', function (e) { if (e.key === KEY) { apply(); if (panel && panel.classList.contains('on')) draw(); } });
+  window.addEventListener('storage', function (e) { if (e.key === curKey()) { apply(); if (panel && panel.classList.contains('on')) draw(); } });
   /* if an older script changes data-theme, put it back in step */
   new MutationObserver(function () { if (!applying && root.getAttribute('data-theme') !== root.getAttribute('data-acx-theme')) apply(); }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-  window.AcaciaAppearance = { open: open, close: close };
+  window.AcaciaAppearance = { open: open, close: close, setUser: setUser, clearUser: function () { setUser(null); }, onSave: function (fn) { onSave = fn; } };
 })();

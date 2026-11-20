@@ -26,12 +26,16 @@ function friendlyAuthError(error, isPhone) {
   const m = (error && error.message) || "Authentication failed.";
   if (/invalid login credentials/i.test(m)) return isPhone ? "Wrong phone number or password." : "Wrong email or password.";
   if (/email not confirmed/i.test(m)) return "This account still needs confirming. Ask the admin to turn off 'Confirm email' in Supabase.";
+  if (/rate limit/i.test(m)) return "Too many sign-up attempts. Wait a little and try again. (Admin: turn off 'Confirm email' in Supabase so no email is sent.)";
   if (/already registered|already exists/i.test(m)) return isPhone ? "This phone number is already registered. Log in instead." : m;
   return m;
 }
+/* the look is saved to the account, so it follows the login to any phone */
+if (window.AcaciaAppearance) AcaciaAppearance.onSave((look) => { supabase.auth.updateUser({ data: { look } }).catch(() => {}); });
 async function paintSession() {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) return;
+  if (window.AcaciaAppearance) AcaciaAppearance.setUser(session.user.id, session.user.user_metadata?.look);
   const label = session.user.user_metadata?.display_name ||
     session.user.user_metadata?.phone || session.user.phone ||
     session.user.email || "Account";
@@ -111,6 +115,7 @@ $("logoutBtn")?.addEventListener("click", async (event) => {
   const { error } = await supabase.auth.signOut();
   if (error) show(error.message);
   else {
+    if (window.AcaciaAppearance) AcaciaAppearance.clearUser();
     if ($("loggedOutActions")) $("loggedOutActions").style.display = "flex";
     if ($("accountMenu")) $("accountMenu").style.display = "none";
     show("You have signed out.");
