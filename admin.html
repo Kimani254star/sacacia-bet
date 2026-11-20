@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2A93B">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<title>Acacia Bet · Back end</title>
+<script src="acacia-appearance.js" data-app="bet"></script>
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--ink:#111827;--mute:#6b7280;--line:#e5e7eb;--pri:#F2A93B;--on:#14181A;--bad:#b91c1c;--ok:#15803d}
+html[data-acx-theme=dark]{--bg:#0b1020;--card:#151b2e;--ink:#e5e7eb;--mute:#9ca3af;--line:#27304a;--bad:#f87171;--ok:#4ade80}
+html[data-acx-accent]{--pri:var(--acx-pri)}
+html[data-acx-accent] .btn{color:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Cambria,Georgia,serif;font-size:16px}
+.top{background:var(--pri);color:var(--on);padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+html[data-acx-accent] .top{color:#fff}
+.top h1{font-size:18px;margin:0;flex:1}.top small{display:block;font-weight:400;opacity:.8;font-size:12px}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 12px;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}
+label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+.btn{border:0;border-radius:10px;background:var(--pri);color:var(--on);padding:12px 16px;font:inherit;font-weight:700;cursor:pointer;margin-top:12px}
+.btn.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn.sm{padding:7px 12px;margin:0;font-size:14px}
+.row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}.row:last-child{border-bottom:0}
+.row .t{flex:1;min-width:180px;overflow-wrap:anywhere}.row .t span{display:block;color:var(--mute);font-size:13px}
+.pill{font-size:12px;border-radius:99px;padding:3px 10px;background:var(--line);color:var(--mute)}
+.msg{border-radius:10px;padding:12px;margin:10px 0;font-size:14px}.msg.bad{background:rgba(185,28,28,.12);color:var(--bad)}.msg.ok{background:rgba(21,128,61,.12);color:var(--ok)}
+.login{max-width:420px;margin:8vh auto}.hide{display:none!important}.mute{color:var(--mute);font-size:13px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.split{grid-template-columns:1fr}}
+a{color:inherit}
+</style>
+</head>
+<body>
+<div class="top"><h1>Acacia Bet · Back end<small id="who">Staff only</small></h1><button class="btn sec sm hide" id="logoutBtn" style="color:inherit;border-color:rgba(0,0,0,.25)">Log out</button></div>
+<div class="wrap">
+
+  <div class="login card" id="loginCard">
+    <h2>Staff login</h2>
+    <div id="loginMsg"></div>
+    <form id="loginForm"><label for="em">Email</label><input id="em" type="email" autocomplete="username" required>
+      <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required minlength="6">
+      <button class="btn" type="submit" style="width:100%">Log in</button></form>
+    <p class="mute" style="margin-top:14px">First time? <a href="#" id="showCreate">Create your staff account</a> (use the email the developer added you with).</p>
+    <form id="createForm" class="hide"><label for="cem">Email</label><input id="cem" type="email" required>
+      <label for="cpw">Choose a password (6+ characters)</label><input id="cpw" type="password" required minlength="6">
+      <button class="btn sec" type="submit" style="width:100%">Create account</button></form>
+    <p class="mute" style="margin-top:14px"><a href="index.html">&larr; Back to Acacia Bet</a></p>
+  </div>
+
+  <div id="console" class="hide">
+    <div id="consoleMsg"></div>
+    <div class="card" id="addCard">
+      <h2>Add a back-end user</h2>
+      <p class="mute">They can then log in on this page with that email and see the back end. If they have no account yet, they use "Create your staff account" on the login screen, or you create the user in Supabase.</p>
+      <form id="addForm"><div class="split"><div><label for="ae">Their email</label><input id="ae" type="email" required></div>
+        <div><label for="ar">Access</label><select id="ar"><option value="staff">Staff (can view)</option><option value="admin">Admin (can view and add users)</option></select></div></div>
+        <button class="btn" type="submit">Add user</button></form>
+    </div>
+    <div class="card"><h2>People with back-end access</h2><div id="staffList"></div></div>
+    <div class="card"><h2>Registered players <span class="pill" id="playerCount">0</span></h2><div id="playerList"></div></div>
+  </div>
+</div>
+<script type="module" src="admin.js"></script>
+</body>
+</html>

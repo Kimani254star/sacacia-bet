@@ -1,0 +1,85 @@
+/* Acacia Stock Count look for Acacia Bet and Acacia Rides: same tokens, top bar, sidebar, cards, buttons and inputs. */
+html{--s-bg:#f3f4f6;--s-card:#fff;--s-ink:#111827;--s-mute:#6b7280;--s-line:#e5e7eb;--s-ok:#15803d;--s-bad:#b91c1c;--s-warn:#b45309;--s-okbg:#f0fdf4;--s-badbg:#fef2f2;--s-warnbg:#fffbeb}
+html[data-acx-theme=dark]{--s-bg:#0b1020;--s-card:#151b2e;--s-ink:#e5e7eb;--s-mute:#9ca3af;--s-line:#27304a;--s-ok:#4ade80;--s-bad:#f87171;--s-warn:#fbbf24;--s-okbg:#10281a;--s-badbg:#2c1517;--s-warnbg:#2b2210}
+html body.acx-stock{--pri:var(--acx-pri,#1e3a8a);--pri2:var(--acx-pri2,#1d4ed8);
+  --bg:var(--s-bg)!important;--bg-alt:var(--s-bg)!important;--surface:var(--s-card)!important;--surface-alt:var(--s-bg)!important;--text:var(--s-ink)!important;--line:var(--s-line)!important;
+  background:var(--s-bg)!important;color:var(--s-ink)!important;margin:0;min-height:100vh}
+body.acx-stock *{-webkit-tap-highlight-color:transparent}
+/* original site header is replaced by the Stock top bar and sidebar */
+body.acx-stock header,body.acx-stock .site-header,body.acx-stock > .demo-banner-wrap{display:none!important}
+body.acx-stock > *:not(.acx-top):not(.acx-side):not(.acx-scrim):not(#acx-root):not(script):not(style):not(link):not(.demo-banner):not(.toast):not(#toast):not(#aiChatBox):not(.ai-chat-btn):not(.modal-overlay):not(.modal-backdrop){max-width:680px;margin-left:auto;margin-right:auto;width:100%}
+body.acx-stock .demo-banner{background:var(--s-warn)!important;color:#fff!important;text-align:center;font-size:13px;padding:4px 10px;font-weight:400}
+body.acx-stock .acx-top{position:sticky;top:0;z-index:30;background:var(--pri);color:#fff;padding:12px 14px;padding-top:calc(12px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:10px;max-width:none;width:100%}
+body.acx-stock .acx-top h1{font-size:17px;margin:0;flex:1;line-height:1.2;color:#fff;font-family:inherit}
+body.acx-stock .acx-top small{display:block;font-weight:400;opacity:.8;font-size:12px}
+body.acx-stock .ib{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:10px;min-width:40px;height:40px;font-size:18px;padding:0 10px;cursor:pointer}
+body.acx-stock .acx-side{position:fixed;top:0;left:0;bottom:0;width:250px;max-width:82%;background:var(--s-card);color:var(--s-ink);border-right:1px solid var(--s-line);z-index:40;display:flex;flex-direction:column;transform:translateX(-100%);transition:transform .2s;padding-top:env(safe-area-inset-top,0px)}
+body.acx-stock .acx-side.open{transform:none}
+body.acx-stock .acx-scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:35;display:none}body.acx-stock .acx-scrim.on{display:block}
+body.acx-stock .sh{display:flex;align-items:center;gap:10px;padding:16px 14px;border-bottom:1px solid var(--s-line)}
+body.acx-stock .sh img{width:38px;height:38px;border-radius:10px}body.acx-stock .sh b{display:block;font-size:16px}body.acx-stock .sh small{display:block;color:var(--s-mute);font-size:12px}
+body.acx-stock .acx-side nav{flex:1;padding:10px 8px;display:flex;flex-direction:column;gap:4px;overflow-y:auto;overscroll-behavior:contain}
+body.acx-stock .nav{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:transparent;border-radius:10px;padding:12px;font-size:15px;color:var(--s-ink);cursor:pointer;font-family:inherit}
+body.acx-stock .nav span{width:22px;text-align:center;color:var(--s-mute)}
+body.acx-stock .nav.on{background:var(--pri);color:#fff}body.acx-stock .nav.on span{color:#fff}
+body.acx-stock .sf{border-top:1px solid var(--s-line);padding:10px 8px calc(10px + env(safe-area-inset-bottom,0px))}
+body.acx-stock .nav.out,body.acx-stock .nav.out span{color:var(--s-bad)}
+body.acx-stock .sf .mute{color:var(--s-mute);font-size:13px;margin:0 12px 8px}
+@media (min-width:900px){body.acx-stock{padding-left:240px}body.acx-stock .acx-side{transform:none;width:240px}body.acx-stock .acx-scrim,body.acx-stock .acx-scrim.on{display:none}body.acx-stock .acx-top #acxMenu{display:none}}
+
+/* ---- cards, buttons, inputs, headings (shared) ---- */
+body.acx-stock h1,body.acx-stock h2,body.acx-stock h3{font-family:inherit;color:var(--s-ink)}
+body.acx-stock .card,body.acx-stock .service-card,body.acx-stock .food-card,body.acx-stock .booking-card,body.acx-stock .testimonial-card,body.acx-stock .faq-item,
+body.acx-stock .dashboard-card,body.acx-stock .dashboard-panel,body.acx-stock .promo-card,body.acx-stock .wallet-card,body.acx-stock .live-card,body.acx-stock .snapshot-card,body.acx-stock .rg-card,
+body.acx-stock .chart-panel,body.acx-stock .bet-panel,body.acx-stock .market-group,body.acx-stock .fixture,body.acx-stock .auth-container,body.acx-stock .modal,body.acx-stock .slip-panel{
+  background:var(--s-card)!important;color:var(--s-ink)!important;border:1px solid var(--s-line)!important;border-radius:14px!important;box-shadow:none!important}
+body.acx-stock .dashboard-panel,body.acx-stock .dashboard-card,body.acx-stock .service-card,body.acx-stock .food-card,body.acx-stock .booking-card,body.acx-stock .testimonial-card,body.acx-stock .faq-item{padding:14px;margin-bottom:12px}
+body.acx-stock .dashboard-panel h2,body.acx-stock .section-head h2,body.acx-stock .section-title h2,body.acx-stock .booking-card h2{font-size:14px!important;margin:0 0 10px;color:var(--s-mute)!important;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+body.acx-stock .section-head{display:block!important;margin:14px 14px 8px}
+body.acx-stock .section-note,body.acx-stock p,body.acx-stock .muted,body.acx-stock .mute{color:var(--s-mute)}
+body.acx-stock label{display:block;font-size:13px;color:var(--s-mute);margin:10px 0 4px}
+body.acx-stock input:not([type=checkbox]):not([type=radio]):not([type=range]),body.acx-stock select,body.acx-stock textarea{width:100%;padding:12px;border:1px solid var(--s-line)!important;border-radius:10px!important;background:var(--s-card)!important;color:var(--s-ink)!important;font-size:16px;font-family:inherit}
+body.acx-stock .btn-gold,body.acx-stock .primary-btn,body.acx-stock .auth-button,body.acx-stock .find-btn,body.acx-stock .quick-btn,body.acx-stock .request-btn,body.acx-stock .btn-register,body.acx-stock .btn-lg,body.acx-stock .place-bet,body.acx-stock .trade-btn.buy,body.acx-stock .bet-action,body.acx-stock .form-submit{
+  background:var(--pri)!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:14px;font-weight:700;font-size:16px;box-shadow:none!important;cursor:pointer}
+body.acx-stock .btn,body.acx-stock .btn-ghost,body.acx-stock .secondary-btn,body.acx-stock .btn-login,body.acx-stock .btn-sm{border-radius:12px!important;font-weight:700;box-shadow:none!important}
+body.acx-stock .btn:not(.btn-gold):not(.btn-lg),body.acx-stock .btn-ghost,body.acx-stock .secondary-btn,body.acx-stock .btn-login{background:transparent!important;color:var(--pri2)!important;border:1px solid var(--s-line)!important}
+body.acx-stock .tabs button,body.acx-stock .tab,body.acx-stock .modal-tab,body.acx-stock .wallet-tab,body.acx-stock .auth-tab,body.acx-stock .tf-chip{border:1px solid var(--s-line)!important;background:var(--s-card)!important;color:var(--s-ink)!important;border-radius:10px!important}
+body.acx-stock .tabs button.on,body.acx-stock .tab.active,body.acx-stock .modal-tab.active,body.acx-stock .wallet-tab.active,body.acx-stock .auth-tab.active,body.acx-stock .tf-chip.active{background:var(--pri)!important;color:#fff!important;border-color:var(--pri)!important}
+body.acx-stock .pill,body.acx-stock .status,body.acx-stock .tag{font-size:12px;border-radius:99px;padding:3px 9px;background:var(--s-line);color:var(--s-mute)}
+body.acx-stock .activity-item,body.acx-stock .odds-row,body.acx-stock .rc-row,body.acx-stock .mt-row{border-bottom:1px solid var(--s-line);background:transparent!important}
+body.acx-stock .odds-btn,body.acx-stock .odd-btn{border:1px solid var(--s-line)!important;background:var(--s-card)!important;color:var(--pri2)!important;border-radius:10px!important;font-weight:700}
+body.acx-stock .odds-btn.selected,body.acx-stock .odd-btn.selected,body.acx-stock .odds-btn.active{background:var(--pri)!important;color:#fff!important}
+body.acx-stock .hero{background:none!important;padding:14px!important;min-height:0!important}
+body.acx-stock .hero h1{font-size:22px!important;line-height:1.25}
+body.acx-stock footer{background:transparent!important;border-top:0!important;color:var(--s-mute)!important;font-size:13px;padding:10px 14px 90px!important}
+body.acx-stock footer a{color:var(--s-mute)!important}
+body.acx-stock .back-to-top{display:none!important}
+body.acx-stock .toast{background:#111827!important;color:#fff!important;border-radius:12px}
+
+/* ---- Rides ---- */
+body.acx-stock.page-index .container{max-width:none!important;padding:0 14px!important}
+body.acx-stock.page-index section{padding:8px 0!important;background:transparent!important}
+body.acx-stock .dashboard-wrapper{display:block!important;min-height:0!important;background:transparent!important}
+body.acx-stock .dashboard-sidebar{display:none!important}
+body.acx-stock .dashboard-content{padding:14px!important;margin:0!important;width:100%!important;background:transparent!important}
+body.acx-stock .dashboard-header h1{font-size:17px!important;margin:0 0 10px}
+body.acx-stock .dashboard-cards{display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
+body.acx-stock .food-card,body.acx-stock .service-card{text-align:left}
+body.acx-stock .map-box{border-radius:12px;overflow:hidden}
+
+/* ---- fixes after first look ---- */
+body.acx-stock #acx-fab{display:none!important}
+body.acx-stock .hero p,body.acx-stock .hero-sub,body.acx-stock .hero .eyebrow{color:var(--s-mute)!important}
+body.acx-stock .hero h1,body.acx-stock .hero h1 *{color:var(--s-ink)!important}
+body.acx-stock .promo-card h3,body.acx-stock .promo-card .accent,body.acx-stock .promo-card *[class*="gold"],body.acx-stock .accent{color:var(--pri2)!important}
+body.acx-stock .promo-card p{color:var(--s-mute)!important}
+body.acx-stock .sport-shortcut,body.acx-stock .league-chip{background:var(--s-card)!important;color:var(--s-ink)!important;border:1px solid var(--s-line)!important;border-radius:12px!important}
+body.acx-stock .sport-shortcut.active,body.acx-stock .sport-shortcut.on,body.acx-stock .league-chip.active{background:var(--pri)!important;color:#fff!important;border-color:var(--pri)!important}
+body.acx-stock .sport-shortcut *,body.acx-stock .league-chip *{color:inherit!important}
+body.acx-stock .live-card,body.acx-stock .hero-inner > *{background-image:none!important}
+
+/* keep the sidebar compact whatever the site's own nav styles say */
+body.acx-stock .acx-side nav{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;align-items:stretch!important;height:auto!important;min-height:0!important;position:static!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:10px 8px!important;margin:0!important;max-width:none!important;gap:4px}
+body.acx-stock .acx-side .nav{flex:none!important;height:auto!important;min-height:0!important;margin:0!important;line-height:1.3}
+body.acx-stock .acx-side .sf{flex:none}
+body.acx-stock .acx-side{z-index:100001}body.acx-stock .acx-scrim{z-index:100000}

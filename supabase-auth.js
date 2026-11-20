@@ -21,7 +21,8 @@ function normalizePhone(raw) {
   if (!/^[17]\d{8}$/.test(d)) throw new Error("Enter a valid Kenyan phone number, e.g. 0712 345 678.");
   return "254" + d;
 }
-const phoneLoginId = (raw) => normalizePhone(raw) + "@phone.acacia.app";
+/* A real, deliverable address is needed (Supabase rejects made-up domains), so the number is added as a "+tag" to the Acacia admin inbox. */
+const phoneLoginId = (raw) => "adminacaciabooks+" + normalizePhone(raw) + "@gmail.com";
 function friendlyAuthError(error, isPhone) {
   const m = (error && error.message) || "Authentication failed.";
   if (/invalid login credentials/i.test(m)) return isPhone ? "Wrong phone number or password." : "Wrong email or password.";
@@ -93,7 +94,7 @@ document.addEventListener("submit", async (event) => {
       const age = (Date.now() - new Date(dob).getTime()) / 31557600000;
       if (!Number.isFinite(age) || age < 18) throw new Error("You must be at least 18 years old to register.");
       result = await supabase.auth.signUp({
-        email: phone + "@phone.acacia.app", password,
+        email: "adminacaciabooks+" + phone + "@gmail.com", password,
         options: { data: { phone, date_of_birth: dob, account_type: "customer" } }
       });
     }

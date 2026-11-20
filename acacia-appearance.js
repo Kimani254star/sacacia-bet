@@ -5,8 +5,8 @@
   var APP = (document.currentScript && document.currentScript.getAttribute('data-app')) || 'app';
   var KEY = 'acxst_look';
   var DEFAULT_ACCENT = APP === 'bet' ? '#F2A93B' : '#16a34a';
-  var ACCENTS = { app: DEFAULT_ACCENT, blue: '#1e3a8a', green: '#166534', purple: '#6d28d9', teal: '#0f766e', red: '#b91c1c', slate: '#334155' };
-  var ACCENT_NAMES = { app: 'Default', blue: 'Blue', green: 'Green', purple: 'Purple', teal: 'Teal', red: 'Red', slate: 'Slate' };
+  var ACCENTS = { blue: '#1e3a8a', app: DEFAULT_ACCENT, green: '#166534', purple: '#6d28d9', teal: '#0f766e', red: '#b91c1c', slate: '#334155' };
+  var ACCENT_NAMES = { blue: 'Blue (default)', app: 'Original', green: 'Green', purple: 'Purple', teal: 'Teal', red: 'Red', slate: 'Slate' };
   var FONTS = {"cambria": ["Cambria", "Cambria,Georgia,serif"], "arial": ["Arial", "Arial,Helvetica,sans-serif"], "roboto": ["Roboto", "Roboto,Arial,sans-serif"], "open-sans": ["Open Sans", "\"Open Sans\",Arial,sans-serif"], "lato": ["Lato", "Lato,Arial,sans-serif"], "inter": ["Inter", "Inter,Arial,sans-serif"], "poppins": ["Poppins", "Poppins,Arial,sans-serif"], "montserrat": ["Montserrat", "Montserrat,Arial,sans-serif"], "nunito": ["Nunito", "Nunito,Arial,sans-serif"], "raleway": ["Raleway", "Raleway,Arial,sans-serif"], "georgia": ["Georgia", "Georgia,serif"], "garamond": ["Garamond", "Garamond,\"Times New Roman\",serif"], "times-new-roman": ["Times New Roman", "\"Times New Roman\",serif"], "calibri": ["Calibri", "Calibri,Arial,sans-serif"], "aptos": ["Aptos", "Aptos,Calibri,Arial,sans-serif"], "segoe-ui": ["Segoe UI", "\"Segoe UI\",Arial,sans-serif"], "verdana": ["Verdana", "Verdana,sans-serif"], "tahoma": ["Tahoma", "Tahoma,sans-serif"], "trebuchet": ["Trebuchet MS", "\"Trebuchet MS\",Arial,sans-serif"], "palatino": ["Palatino Linotype", "\"Palatino Linotype\",Palatino,serif"], "baskerville": ["Baskerville", "Baskerville,\"Times New Roman\",serif"], "merriweather": ["Merriweather", "Merriweather,Georgia,serif"], "playfair": ["Playfair Display", "\"Playfair Display\",Georgia,serif"], "libre-baskerville": ["Libre Baskerville", "\"Libre Baskerville\",Georgia,serif"], "source-sans": ["Source Sans 3", "\"Source Sans 3\",Arial,sans-serif"], "ibm-plex": ["IBM Plex Sans", "\"IBM Plex Sans\",Arial,sans-serif"], "ubuntu": ["Ubuntu", "Ubuntu,Arial,sans-serif"], "fira-sans": ["Fira Sans", "\"Fira Sans\",Arial,sans-serif"], "work-sans": ["Work Sans", "\"Work Sans\",Arial,sans-serif"], "dm-sans": ["DM Sans", "\"DM Sans\",Arial,sans-serif"], "manrope": ["Manrope", "Manrope,Arial,sans-serif"], "rubik": ["Rubik", "Rubik,Arial,sans-serif"], "mulish": ["Mulish", "Mulish,Arial,sans-serif"], "quicksand": ["Quicksand", "Quicksand,Arial,sans-serif"], "cabin": ["Cabin", "Cabin,Arial,sans-serif"], "pt-sans": ["PT Sans", "\"PT Sans\",Arial,sans-serif"], "noto-sans": ["Noto Sans", "\"Noto Sans\",Arial,sans-serif"], "oswald": ["Oswald", "Oswald,Arial,sans-serif"], "roboto-slab": ["Roboto Slab", "\"Roboto Slab\",Georgia,serif"], "bitter": ["Bitter", "Bitter,Georgia,serif"], "libre-franklin": ["Libre Franklin", "\"Libre Franklin\",Arial,sans-serif"], "karla": ["Karla", "Karla,Arial,sans-serif"], "archivo": ["Archivo", "Archivo,Arial,sans-serif"], "public-sans": ["Public Sans", "\"Public Sans\",Arial,sans-serif"], "figtree": ["Figtree", "Figtree,Arial,sans-serif"], "plus-jakarta": ["Plus Jakarta Sans", "\"Plus Jakarta Sans\",Arial,sans-serif"], "sora": ["Sora", "Sora,Arial,sans-serif"], "urbanist": ["Urbanist", "Urbanist,Arial,sans-serif"], "outfit": ["Outfit", "Outfit,Arial,sans-serif"], "lexend": ["Lexend", "Lexend,Arial,sans-serif"], "spectral": ["Spectral", "Spectral,Georgia,serif"], "cormorant": ["Cormorant Garamond", "\"Cormorant Garamond\",Georgia,serif"], "crimson-text": ["Crimson Text", "\"Crimson Text\",Georgia,serif"], "lora": ["Lora", "Lora,Georgia,serif"], "eb-garamond": ["EB Garamond", "\"EB Garamond\",Georgia,serif"], "arvo": ["Arvo", "Arvo,Georgia,serif"], "zilla-slab": ["Zilla Slab", "\"Zilla Slab\",Georgia,serif"], "inconsolata": ["Inconsolata", "Inconsolata,monospace"], "space-grotesk": ["Space Grotesk", "\"Space Grotesk\",Arial,sans-serif"], "exo-2": ["Exo 2", "\"Exo 2\",Arial,sans-serif"]};
   var SYSTEM = { cambria: 1, arial: 1, georgia: 1, garamond: 1, verdana: 1, tahoma: 1, trebuchet: 1, times: 1, courier: 1, helvetica: 1, calibri: 1 };
   var SIZES = { s: 0.9, m: 1, l: 1.1 };
@@ -52,10 +52,13 @@
     root.setAttribute('data-acx-theme', th);
     root.setAttribute('data-theme', th); /* keeps the older dark-mode rules in step */
     root.style.colorScheme = th;
-    var hex = ACCENTS[L.accent];
-    if (hex && L.accent !== 'app') {
+    var akey = ACCENTS[L.accent] ? L.accent : 'blue';
+    var hex = ACCENTS[akey];
+    if (akey === 'blue' && th === 'dark') hex = '#3b5bdb';
+    if (akey !== 'app') {
       var dark = th === 'dark';
-      root.setAttribute('data-acx-accent', L.accent);
+      root.setAttribute('data-acx-accent', akey);
+      s.setProperty('--acx-pri2', akey === 'blue' ? (dark ? '#5c7cfa' : '#1d4ed8') : mix(hex, dark ? '#ffffff' : '#000000', dark ? 0.6 : 0.85));
       s.setProperty('--acx-pri', hex);
       s.setProperty('--acx-pri-dk', mix(hex, '#000000', 0.75));
       s.setProperty('--acx-pri-lt', mix(hex, '#ffffff', 0.75));
@@ -65,7 +68,7 @@
       s.setProperty('--acx-t3', dark ? mix(hex, '#0b1020', 0.28) : mix(hex, '#ffffff', 0.27));
     } else {
       root.removeAttribute('data-acx-accent');
-      ['--acx-pri', '--acx-pri-dk', '--acx-pri-lt', '--acx-pri-xd', '--acx-t1', '--acx-t2', '--acx-t3'].forEach(function (p) { s.removeProperty(p); });
+      ['--acx-pri', '--acx-pri2', '--acx-pri-dk', '--acx-pri-lt', '--acx-pri-xd', '--acx-t1', '--acx-t2', '--acx-t3'].forEach(function (p) { s.removeProperty(p); });
     }
     var f = FONTS[L.font];
     if (f && L.font !== 'cambria') { loadFont(L.font); root.setAttribute('data-acx-font', L.font); s.setProperty('--acx-font', f[1]); }
@@ -73,7 +76,7 @@
     var z = SIZES[L.size] || 1;
     if (z === 1) s.removeProperty('zoom'); else s.setProperty('zoom', String(z));
     var m = document.querySelector('meta[name=theme-color]');
-    if (m) { if (!m.getAttribute('data-acx-orig')) m.setAttribute('data-acx-orig', m.getAttribute('content') || ''); m.setAttribute('content', hex && L.accent !== 'app' ? hex : (m.getAttribute('data-acx-orig') || DEFAULT_ACCENT)); }
+    if (m) { if (!m.getAttribute('data-acx-orig')) m.setAttribute('data-acx-orig', m.getAttribute('content') || ''); m.setAttribute('content', akey !== 'app' ? hex : (m.getAttribute('data-acx-orig') || DEFAULT_ACCENT)); }
     applying = false;
   }
 
@@ -122,7 +125,7 @@
   function seg(a, cur, opts) { return '<div class="tabs">' + opts.map(function (o) { return '<button type="button" data-a="' + a + '" data-v="' + o[0] + '" class="' + (cur === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>'; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function draw() {
-    var L = lget(), th = L.theme || 'auto', ac = ACCENTS[L.accent] ? L.accent : 'app', sz = L.size || 'm', fn = FONTS[L.font] ? L.font : 'cambria';
+    var L = lget(), th = L.theme || 'auto', ac = ACCENTS[L.accent] ? L.accent : 'blue', sz = L.size || 'm', fn = FONTS[L.font] ? L.font : 'cambria';
     var sw = Object.keys(ACCENTS).map(function (k) { return '<button type="button" class="swatch' + (ac === k ? ' on' : '') + '" data-a="accent" data-v="' + k + '" style="background:' + ACCENTS[k] + '" aria-label="' + ACCENT_NAMES[k] + '" title="' + ACCENT_NAMES[k] + '"></button>'; }).join('');
     var opts = Object.keys(FONTS).map(function (k) { return '<option value="' + k + '"' + (fn === k ? ' selected' : '') + '>' + esc(FONTS[k][0]) + '</option>'; }).join('');
     panel.innerHTML = '<div class="top"><h1>Appearance<small>Saved on this device</small></h1><button type="button" class="ib" data-a="close" aria-label="Close">&#10005;</button></div>' +
