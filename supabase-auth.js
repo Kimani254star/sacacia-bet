@@ -11,6 +11,24 @@ const setBusy = (form, busy) => {
   if (button) { button.disabled = busy; button.dataset.originalText ||= button.textContent;
     button.textContent = busy ? "Please wait…" : button.dataset.originalText; }
 };
+
+/* Phone + password sign-in (like Betika): the Kenyan number is turned into a private login id,
+   so no SMS provider is needed. 0712 345 678, +254712345678 and 254712345678 are the same account. */
+function normalizePhone(raw) {
+  let d = String(raw || "").replace(/[^\d]/g, "");
+  if (d.startsWith("254")) d = d.slice(3);
+  else if (d.startsWith("0")) d = d.slice(1);
+  if (!/^[17]\d{8}$/.test(d)) throw new Error("Enter a valid Kenyan phone number, e.g. 0712 345 678.");
+  return "254" + d;
+}
+const phoneLoginId = (raw) => normalizePhone(raw) + "@phone.acacia.app";
+function friendlyAuthError(error, isPhone) {
+  const m = (error && error.message) || "Authentication failed.";
+  if (/invalid login credentials/i.test(m)) return isPhone ? "Wrong phone number or password." : "Wrong email or password.";
+  if (/email not confirmed/i.test(m)) return "This account still needs confirming. Ask the admin to turn off 'Confirm email' in Supabase.";
+  if (/already registered|already exists/i.test(m)) return isPhone ? "This phone number is already registered. Log in instead." : m;
+  return m;
+}
 async function paintSession() {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) return;
@@ -59,11 +77,11 @@ document.addEventListener("submit", async (event) => {
       });
     } else if (isPhoneLogin) {
       result = await supabase.auth.signInWithPassword({
-        phone: $("login-phone").value.trim(),
+        email: phoneLoginId($("login-phone").value),
         password: $("login-password").value
       });
     } else {
-      const phone = $("reg-phone").value.trim();
+      const phone = normalizePhone($("reg-phone").value);
       const password = $("reg-password").value;
       const dob = $("reg-dob").value;
       if (!$("reg-age").checked) throw new Error("You must confirm the age and responsible-play declaration.");
@@ -71,8 +89,8 @@ document.addEventListener("submit", async (event) => {
       const age = (Date.now() - new Date(dob).getTime()) / 31557600000;
       if (!Number.isFinite(age) || age < 18) throw new Error("You must be at least 18 years old to register.");
       result = await supabase.auth.signUp({
-        phone, password,
-        options: { data: { date_of_birth: dob, account_type: "customer" } }
+        email: phone + "@phone.acacia.app", password,
+        options: { data: { phone, date_of_birth: dob, account_type: "customer" } }
       });
     }
     if (result.error) throw result.error;
@@ -80,11 +98,11 @@ document.addEventListener("submit", async (event) => {
       show("Signed in successfully.");
       await paintSession();
     } else {
-      show("Registration received. Complete any phone/email confirmation requested by Supabase.");
+      show(isPhoneSignup ? "Account created. Log in with your phone number and password." : "Registration received. Complete any email confirmation requested.");
     }
     if (form.closest("#modalBackdrop")) $("modalBackdrop")?.classList.remove("open");
   } catch (error) {
-    show(error.message || "Authentication failed.");
+    show(friendlyAuthError(error, isPhoneLogin || isPhoneSignup));
   } finally { setBusy(form, false); }
 }, true);
 

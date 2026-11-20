@@ -1,4 +1,4 @@
-const CACHE = 'acacia-bet-shell-v2';
+const CACHE = 'acacia-bet-shell-v3';
 const SHELL = ["./", "./index.html", "./games.html", "./how.html", "./markets.html", "./saccaia-trading-demo.html", "./trading.html", "./trading-how.html", "./trading-markets.html", "./trading-wallet.html", "./wallet.html", "./styles.css", "./acacia-appearance.js", "./scripts.js", "./supabase.js", "./supabase-config.js", "./supabase-auth.js", "./pwa-register.js", "./audit-log.js", "./manifest.webmanifest", "./sw.js", "./logs.html", "./build-log.html", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./favicon-32.png", "./flashscore-config.js", "./flashscore-feed.js"];
 self.addEventListener('install', event => event.waitUntil((async()=>{const c=await caches.open(CACHE); await Promise.all(SHELL.map(x=>c.add(x).catch(()=>{}))); await self.skipWaiting();})()));
 self.addEventListener('activate', event => event.waitUntil((async()=>{for(const k of await caches.keys()) if(k!==CACHE) await caches.delete(k); await self.clients.claim();})()));
