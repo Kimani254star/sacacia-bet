@@ -5827,9 +5827,9 @@ body.page-index .sport-shortcut span { font-size:18px; }
 body.page-index .flashscore-feed-section { background:#fff; color:#17251c; border:1px solid #d8e4da; border-radius:7px; margin:18px auto; padding:18px; max-width:1500px; }
 @media(max-width:900px){ body.page-index .hero{padding:18px;} body.page-index .acacia-sports-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));} body.page-index .sport-shortcut{justify-content:center;} }
 
-html[data-theme="dark"] body { background:#101714 !important; color:#edf4ef !important; color-scheme:dark; }
-html[data-theme="dark"] body header, html[data-theme="dark"] body nav, html[data-theme="dark"] body .card, html[data-theme="dark"] body .panel, html[data-theme="dark"] body .modal, html[data-theme="dark"] body .auth-box, html[data-theme="dark"] body .dashboard-card, html[data-theme="dark"] body .auth-modal, html[data-theme="dark"] body .auth-content { background-color:#18221d !important; color:#edf4ef !important; border-color:#34483c !important; }
-html[data-theme="dark"] body input, html[data-theme="dark"] body select, html[data-theme="dark"] body textarea { background:#111a15 !important; color:#f4f7f4 !important; border-color:#46594c !important; }
+html[data-theme="dark"] body { background:#0b1020 !important; color:#e5e7eb !important; color-scheme:dark; }
+html[data-theme="dark"] body header, html[data-theme="dark"] body nav, html[data-theme="dark"] body .card, html[data-theme="dark"] body .panel, html[data-theme="dark"] body .modal, html[data-theme="dark"] body .auth-box, html[data-theme="dark"] body .dashboard-card, html[data-theme="dark"] body .auth-modal, html[data-theme="dark"] body .auth-content { background-color:#151b2e !important; color:#e5e7eb !important; border-color:#27304a !important; }
+html[data-theme="dark"] body input, html[data-theme="dark"] body select, html[data-theme="dark"] body textarea { background:#0b1020 !important; color:#e5e7eb !important; border-color:#27304a !important; }
 html[data-theme="dark"] body a { color:inherit; }
 html[data-theme="dark"] body p, html[data-theme="dark"] body label, html[data-theme="dark"] body small { color:inherit; }
 
